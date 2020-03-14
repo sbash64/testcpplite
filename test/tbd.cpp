@@ -11,20 +11,30 @@ struct Test {
 
 std::string failedName_;
 std::string currentName_;
-int failed_;
+bool failed_;
 
 void failed() {
-    ++failed_;
+    failed_ = true;
     failedName_ = currentName_;
 }
 
 void test(const std::vector<Test> &tests, std::ostream &stream) {
+    int failures{};
+    std::vector<std::string> failureNames;
     for (auto test : tests) {
         currentName_ = test.name;
         test.f();
+        if (failed_) {
+            ++failures;
+            failureNames.push_back(failedName_);
+        }
+        failed_ = false;
     }
-    stream << (failed_ == 0 ? "pass\n" : "fail " + failedName_ + '\n');
-    failed_ = 0;
+    if (failures == 0)
+        stream << "pass\n";
+    else
+        for (auto name : failureNames)
+            stream << "fail " << name << '\n';
 }
 
 void assertEqual(const std::string &expected, const std::string &actual) {
@@ -57,6 +67,18 @@ void testFailedOnlyTestShowsFailedMessage() {
     test({{fails, "fails"}}, stream);
     assertEqual("fail fails\n", stream);
 }
+
+void testFailedOneOfTwoTestsShowsFailedMessage() {
+    std::stringstream stream;
+    test({{passes, "passes"}, {fails, "fails"}}, stream);
+    assertEqual("fail fails\n", stream);
+}
+
+void testFailsBothTestsShowsFailedMessage() {
+    std::stringstream stream;
+    test({{fails, "fail1"}, {fails, "fail2"}}, stream);
+    assertEqual("fail fail1\nfail fail2\n", stream);
+}
 }
 }
 
@@ -65,7 +87,11 @@ void main() {
     test({{testPassedOnlyTestShowsPassedMessage,
               "testPassedOnlyTestShowsPassedMessage"},
              {testFailedOnlyTestShowsFailedMessage,
-                 "testFailedOnlyTestShowsFailedMessage"}},
+                 "testFailedOnlyTestShowsFailedMessage"},
+             {testFailedOneOfTwoTestsShowsFailedMessage,
+                 "testFailedOneOfTwoTestsShowsFailedMessage"},
+             {testFailsBothTestsShowsFailedMessage,
+                 "testFailsBothTestsShowsFailedMessage"}},
         std::cout);
 }
 }
