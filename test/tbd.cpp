@@ -21,7 +21,8 @@ void failed() {
 void test(const std::vector<Test> &tests, std::ostream &stream) {
     int failures{};
     std::vector<std::string> failureNames;
-    for (auto test : tests) {
+    for (const auto &test : tests) {
+        auto restoreName{currentName_};
         currentName_ = test.name;
         test.f();
         if (failed_) {
@@ -29,11 +30,12 @@ void test(const std::vector<Test> &tests, std::ostream &stream) {
             failureNames.push_back(failedName_);
         }
         failed_ = false;
+        currentName_ = restoreName;
     }
     if (failures == 0)
         stream << "pass\n";
     else
-        for (auto name : failureNames)
+        for (const auto &name : failureNames)
             stream << "fail " << name << '\n';
 }
 
@@ -53,28 +55,29 @@ void passes() {}
 void fails() { assertEqual("a", "b"); }
 
 void assertEqual(const std::string &s, const std::stringstream &stream) {
+    std::cout << "expected: " << s << "actual: " << stream.str() << '\n';
     testcpp::assertEqual(s, stream.str());
 }
 
-void testPassedOnlyTestShowsPassedMessage() {
+void passedOnlyTestShowsPassedMessage() {
     std::stringstream stream;
     test({{passes, "passes"}}, stream);
     assertEqual("pass\n", stream);
 }
 
-void testFailedOnlyTestShowsFailedMessage() {
+void failedOnlyTestShowsFailedMessage() {
     std::stringstream stream;
     test({{fails, "fails"}}, stream);
     assertEqual("fail fails\n", stream);
 }
 
-void testFailedOneOfTwoTestsShowsFailedMessage() {
+void failedOneOfTwoTestsShowsFailedMessage() {
     std::stringstream stream;
     test({{passes, "passes"}, {fails, "fails"}}, stream);
     assertEqual("fail fails\n", stream);
 }
 
-void testFailsBothTestsShowsFailedMessage() {
+void failsBothTestsShowsFailedMessage() {
     std::stringstream stream;
     test({{fails, "fail1"}, {fails, "fail2"}}, stream);
     assertEqual("fail fail1\nfail fail2\n", stream);
@@ -84,14 +87,14 @@ void testFailsBothTestsShowsFailedMessage() {
 
 namespace testcpp {
 void main() {
-    test({{testPassedOnlyTestShowsPassedMessage,
-              "testPassedOnlyTestShowsPassedMessage"},
-             {testFailedOnlyTestShowsFailedMessage,
-                 "testFailedOnlyTestShowsFailedMessage"},
-             {testFailedOneOfTwoTestsShowsFailedMessage,
-                 "testFailedOneOfTwoTestsShowsFailedMessage"},
-             {testFailsBothTestsShowsFailedMessage,
-                 "testFailsBothTestsShowsFailedMessage"}},
+    test(
+        {{passedOnlyTestShowsPassedMessage, "passedOnlyTestShowsPassedMessage"},
+            {failedOnlyTestShowsFailedMessage,
+                "failedOnlyTestShowsFailedMessage"},
+            {failedOneOfTwoTestsShowsFailedMessage,
+                "failedOneOfTwoTestsShowsFailedMessage"},
+            {failsBothTestsShowsFailedMessage,
+                "failsBothTestsShowsFailedMessage"}},
         std::cout);
 }
 }
