@@ -6,13 +6,13 @@ namespace testcpp {
 namespace {
 void passes() { assertEqual("a", "a"); }
 
-void passesIntegerComparison() { assertEqual(1, 1); }
-
-void passesBooleanAssertion() { assertTrue(true); }
-
 void fails() { assertEqual("a", "b"); }
 
+void passesIntegerComparison() { assertEqual(1, 1); }
+
 void failsIntegerComparison() { assertEqual(1, 0); }
+
+void passesBooleanAssertion() { assertTrue(true); }
 
 void failsBooleanAssertion() { assertTrue(false); }
 
