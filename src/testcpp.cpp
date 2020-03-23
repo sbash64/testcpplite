@@ -33,5 +33,8 @@ void assertEqual(const std::string &expected, const std::string &actual) {
         failed();
 }
 
-void assertEqual(int expected, int actual) {}
+void assertEqual(int expected, int actual) {
+    if (expected != actual)
+        failed();
+}
 }

@@ -10,6 +10,8 @@ void passesIntegerComparison() { assertEqual(1, 1); }
 
 void fails() { assertEqual("a", "b"); }
 
+void failsIntegerComparison() { assertEqual(1, 0); }
+
 void assertEqual(const std::string &s, const std::stringstream &stream) {
     std::cout << "expected: " << s << "actual: " << stream.str() << '\n';
     testcpp::assertEqual(s, stream.str());
@@ -45,10 +47,16 @@ void passesLastTestButFailsFirstShowsFailedMessage() {
     assertEqual("fail fails\n", stream);
 }
 
-void passedOnlyTestShowsPassedMessageWithIntegerComparison() {
+void passedIntegerComparisonShowsPassedMessage() {
     std::stringstream stream;
     test({{passesIntegerComparison, "integerComparisonPass"}}, stream);
     assertEqual("pass\n", stream);
+}
+
+void failedIntegerComparisonShowsFailedMessage() {
+    std::stringstream stream;
+    test({{failsIntegerComparison, "failsIntegerComparison"}}, stream);
+    assertEqual("fail failsIntegerComparison\n", stream);
 }
 
 void main() {
@@ -62,8 +70,10 @@ void main() {
                 "failsBothTestsShowsFailedMessage"},
             {passesLastTestButFailsFirstShowsFailedMessage,
                 "passesLastTestButFailsFirstShowsFailedMessage"},
-            {passedOnlyTestShowsPassedMessageWithIntegerComparison,
-                "passedOnlyTestShowsPassedMessageWithIntegerComparison"}},
+            {passedIntegerComparisonShowsPassedMessage,
+                "passedIntegerComparisonShowsPassedMessage"},
+            {failedIntegerComparisonShowsFailedMessage,
+                "failedIntegerComparisonShowsFailedMessage"}},
         std::cout);
 }
 }
