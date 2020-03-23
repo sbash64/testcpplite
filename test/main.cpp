@@ -14,6 +14,8 @@ void fails() { assertEqual("a", "b"); }
 
 void failsIntegerComparison() { assertEqual(1, 0); }
 
+void failsBooleanAssertion() { assertTrue(false); }
+
 void assertEqual(const std::string &s, const std::stringstream &stream) {
     std::cout << "expected: " << s << "actual: " << stream.str() << '\n';
     testcpp::assertEqual(s, stream.str());
@@ -67,6 +69,12 @@ void passedBooleanAssertionShowsPassedMessage() {
     assertEqual("pass\n", stream);
 }
 
+void failedBooleanAssertionShowsFailedMessage() {
+    std::stringstream stream;
+    test({{failsBooleanAssertion, "failsBooleanAssertion"}}, stream);
+    assertEqual("fail failsBooleanAssertion\n", stream);
+}
+
 void main() {
     test(
         {{passedOnlyTestShowsPassedMessage, "passedOnlyTestShowsPassedMessage"},
@@ -83,7 +91,9 @@ void main() {
             {failedIntegerComparisonShowsFailedMessage,
                 "failedIntegerComparisonShowsFailedMessage"},
             {passedBooleanAssertionShowsPassedMessage,
-                "passedBooleanAssertionShowsPassedMessage"}},
+                "passedBooleanAssertionShowsPassedMessage"},
+            {failedBooleanAssertionShowsFailedMessage,
+                "failedBooleanAssertionShowsFailedMessage"}},
         std::cout);
 }
 }

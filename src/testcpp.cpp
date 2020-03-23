@@ -38,5 +38,8 @@ void assertEqual(int expected, int actual) {
         failed();
 }
 
-void assertTrue(bool) {}
+void assertTrue(bool c) {
+    if (!c)
+        failed();
+}
 }
