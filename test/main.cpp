@@ -31,57 +31,57 @@ void assertEqual(const std::string &s, const std::stringstream &stream) {
     testcpp::assertEqual(s, stream.str());
 }
 
+void assertEqual(const std::string &s, const std::vector<Test> &tests) {
+    assertEqual(s, test(tests));
+}
+
 void passedOnlyTestShowsPassedMessage() {
-    assertEqual("pass\n", test({{passes, "passes"}}));
+    assertEqual("pass\n", {{passes, "passes"}});
 }
 
 void failedOnlyTestShowsFailedMessage() {
-    assertEqual("fail fails\n", test({{fails, "fails"}}));
+    assertEqual("fail fails\n", {{fails, "fails"}});
 }
 
 void failedOneOfTwoTestsShowsFailedMessage() {
-    assertEqual("fail fails\n", test({{passes, "passes"}, {fails, "fails"}}));
+    assertEqual("fail fails\n", {{passes, "passes"}, {fails, "fails"}});
 }
 
 void failsBothTestsShowsFailedMessage() {
     assertEqual(
-        "fail fail1\nfail fail2\n", test({{fails, "fail1"}, {fails, "fail2"}}));
+        "fail fail1\nfail fail2\n", {{fails, "fail1"}, {fails, "fail2"}});
 }
 
 void passesLastTestButFailsFirstShowsFailedMessage() {
-    assertEqual("fail fails\n", test({{fails, "fails"}, {passes, "passes"}}));
+    assertEqual("fail fails\n", {{fails, "fails"}, {passes, "passes"}});
 }
 
 void passedIntegerComparisonShowsPassedMessage() {
-    assertEqual(
-        "pass\n", test({{passesIntegerComparison, "integerComparisonPass"}}));
+    assertEqual("pass\n", {{passesIntegerComparison, "integerComparisonPass"}});
 }
 
 void failedIntegerComparisonShowsFailedMessage() {
     assertEqual("fail failsIntegerComparison\n",
-        test({{failsIntegerComparison, "failsIntegerComparison"}}));
+        {{failsIntegerComparison, "failsIntegerComparison"}});
 }
 
 void passedBooleanAssertionShowsPassedMessage() {
-    assertEqual(
-        "pass\n", test({{passesBooleanAssertion, "passesBooleanAssertion"}}));
+    assertEqual("pass\n", {{passesBooleanAssertion, "passesBooleanAssertion"}});
 }
 
 void failedBooleanAssertionShowsFailedMessage() {
     assertEqual("fail failsBooleanAssertion\n",
-        test({{failsBooleanAssertion, "failsBooleanAssertion"}}));
+        {{failsBooleanAssertion, "failsBooleanAssertion"}});
 }
 
 void passedNegativeBooleanAssertionShowsPassedMessage() {
     assertEqual("pass\n",
-        test({{passesNegativeBooleanAssertion,
-            "passesNegativeBooleanAssertion"}}));
+        {{passesNegativeBooleanAssertion, "passesNegativeBooleanAssertion"}});
 }
 
 void failedNegativeBooleanAssertionShowsFailedMessage() {
     assertEqual("fail failsNegativeBooleanAssertion\n",
-        test({{failsNegativeBooleanAssertion,
-            "failsNegativeBooleanAssertion"}}));
+        {{failsNegativeBooleanAssertion, "failsNegativeBooleanAssertion"}});
 }
 
 void main() {
