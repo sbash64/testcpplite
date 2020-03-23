@@ -16,67 +16,60 @@ void passesBooleanAssertion() { assertTrue(true); }
 
 void failsBooleanAssertion() { assertTrue(false); }
 
+auto test(const std::vector<Test> &tests) -> std::stringstream {
+    std::stringstream stream;
+    test(tests, stream);
+    return stream;
+}
+
 void assertEqual(const std::string &s, const std::stringstream &stream) {
     std::cout << "expected: " << s << "actual: " << stream.str() << '\n';
     testcpp::assertEqual(s, stream.str());
 }
 
 void passedOnlyTestShowsPassedMessage() {
-    std::stringstream stream;
-    test({{passes, "passes"}}, stream);
-    assertEqual("pass\n", stream);
+    assertEqual("pass\n", test({{passes, "passes"}}));
 }
 
 void failedOnlyTestShowsFailedMessage() {
-    std::stringstream stream;
-    test({{fails, "fails"}}, stream);
-    assertEqual("fail fails\n", stream);
+    assertEqual("fail fails\n", test({{fails, "fails"}}));
 }
 
 void failedOneOfTwoTestsShowsFailedMessage() {
-    std::stringstream stream;
-    test({{passes, "passes"}, {fails, "fails"}}, stream);
-    assertEqual("fail fails\n", stream);
+    assertEqual("fail fails\n", test({{passes, "passes"}, {fails, "fails"}}));
 }
 
 void failsBothTestsShowsFailedMessage() {
-    std::stringstream stream;
-    test({{fails, "fail1"}, {fails, "fail2"}}, stream);
-    assertEqual("fail fail1\nfail fail2\n", stream);
+    assertEqual(
+        "fail fail1\nfail fail2\n", test({{fails, "fail1"}, {fails, "fail2"}}));
 }
 
 void passesLastTestButFailsFirstShowsFailedMessage() {
-    std::stringstream stream;
-    test({{fails, "fails"}, {passes, "passes"}}, stream);
-    assertEqual("fail fails\n", stream);
+    assertEqual("fail fails\n", test({{fails, "fails"}, {passes, "passes"}}));
 }
 
 void passedIntegerComparisonShowsPassedMessage() {
-    std::stringstream stream;
-    test({{passesIntegerComparison, "integerComparisonPass"}}, stream);
-    assertEqual("pass\n", stream);
+    assertEqual(
+        "pass\n", test({{passesIntegerComparison, "integerComparisonPass"}}));
 }
 
 void failedIntegerComparisonShowsFailedMessage() {
-    std::stringstream stream;
-    test({{failsIntegerComparison, "failsIntegerComparison"}}, stream);
-    assertEqual("fail failsIntegerComparison\n", stream);
+    assertEqual("fail failsIntegerComparison\n",
+        test({{failsIntegerComparison, "failsIntegerComparison"}}));
 }
 
 void passedBooleanAssertionShowsPassedMessage() {
-    std::stringstream stream;
-    test({{passesBooleanAssertion, "passesBooleanAssertion"}}, stream);
-    assertEqual("pass\n", stream);
+    assertEqual(
+        "pass\n", test({{passesBooleanAssertion, "passesBooleanAssertion"}}));
 }
 
 void failedBooleanAssertionShowsFailedMessage() {
-    std::stringstream stream;
-    test({{failsBooleanAssertion, "failsBooleanAssertion"}}, stream);
-    assertEqual("fail failsBooleanAssertion\n", stream);
+    assertEqual("fail failsBooleanAssertion\n",
+        test({{failsBooleanAssertion, "failsBooleanAssertion"}}));
 }
 
 void main() {
-    test(
+    testcpp::test(
         {{passedOnlyTestShowsPassedMessage, "passedOnlyTestShowsPassedMessage"},
             {failedOnlyTestShowsFailedMessage,
                 "failedOnlyTestShowsFailedMessage"},
