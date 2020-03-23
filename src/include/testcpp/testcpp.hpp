@@ -16,6 +16,7 @@ void test(const std::vector<Test> &tests, std::ostream &stream);
 void assertEqual(const std::string &expected, const std::string &actual);
 void assertEqual(int expected, int actual);
 void assertTrue(bool);
+void assertFalse(bool);
 }
 
 #endif

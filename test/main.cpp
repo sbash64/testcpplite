@@ -16,6 +16,10 @@ void passesBooleanAssertion() { assertTrue(true); }
 
 void failsBooleanAssertion() { assertTrue(false); }
 
+void passesNegativeBooleanAssertion() { assertFalse(false); }
+
+void failsNegativeBooleanAssertion() { assertFalse(true); }
+
 auto test(const std::vector<Test> &tests) -> std::stringstream {
     std::stringstream stream;
     test(tests, stream);
@@ -68,6 +72,18 @@ void failedBooleanAssertionShowsFailedMessage() {
         test({{failsBooleanAssertion, "failsBooleanAssertion"}}));
 }
 
+void passedNegativeBooleanAssertionShowsPassedMessage() {
+    assertEqual("pass\n",
+        test({{passesNegativeBooleanAssertion,
+            "passesNegativeBooleanAssertion"}}));
+}
+
+void failedNegativeBooleanAssertionShowsFailedMessage() {
+    assertEqual("fail failsNegativeBooleanAssertion\n",
+        test({{failsNegativeBooleanAssertion,
+            "failsNegativeBooleanAssertion"}}));
+}
+
 void main() {
     testcpp::test(
         {{passedOnlyTestShowsPassedMessage, "passedOnlyTestShowsPassedMessage"},
@@ -86,7 +102,11 @@ void main() {
             {passedBooleanAssertionShowsPassedMessage,
                 "passedBooleanAssertionShowsPassedMessage"},
             {failedBooleanAssertionShowsFailedMessage,
-                "failedBooleanAssertionShowsFailedMessage"}},
+                "failedBooleanAssertionShowsFailedMessage"},
+            {passedNegativeBooleanAssertionShowsPassedMessage,
+                "passedNegativeBooleanAssertionShowsPassedMessage"},
+            {failedNegativeBooleanAssertionShowsFailedMessage,
+                "failedNegativeBooleanAssertionShowsFailedMessage"}},
         std::cout);
 }
 }

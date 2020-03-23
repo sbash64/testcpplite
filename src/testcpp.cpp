@@ -42,4 +42,9 @@ void assertTrue(bool c) {
     if (!c)
         failed();
 }
+
+void assertFalse(bool c) {
+    if (c)
+        failed();
+}
 }
