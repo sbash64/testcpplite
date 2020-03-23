@@ -35,12 +35,16 @@ void assertEqual(const std::string &s, const std::vector<Test> &tests) {
     assertEqual(s, test(tests));
 }
 
+void assertEqual(const std::string &s, const Test &t) {
+    assertEqual(s, test({t}));
+}
+
 void passedOnlyTestShowsPassedMessage() {
-    assertEqual("pass\n", {{passes, "passes"}});
+    assertEqual("pass\n", {passes, "passes"});
 }
 
 void failedOnlyTestShowsFailedMessage() {
-    assertEqual("fail fails\n", {{fails, "fails"}});
+    assertEqual("fail fails\n", {fails, "fails"});
 }
 
 void failedOneOfTwoTestsShowsFailedMessage() {
@@ -57,31 +61,31 @@ void passesLastTestButFailsFirstShowsFailedMessage() {
 }
 
 void passedIntegerComparisonShowsPassedMessage() {
-    assertEqual("pass\n", {{passesIntegerComparison, "integerComparisonPass"}});
+    assertEqual("pass\n", {passesIntegerComparison, "integerComparisonPass"});
 }
 
 void failedIntegerComparisonShowsFailedMessage() {
     assertEqual("fail failsIntegerComparison\n",
-        {{failsIntegerComparison, "failsIntegerComparison"}});
+        {failsIntegerComparison, "failsIntegerComparison"});
 }
 
 void passedBooleanAssertionShowsPassedMessage() {
-    assertEqual("pass\n", {{passesBooleanAssertion, "passesBooleanAssertion"}});
+    assertEqual("pass\n", {passesBooleanAssertion, "passesBooleanAssertion"});
 }
 
 void failedBooleanAssertionShowsFailedMessage() {
     assertEqual("fail failsBooleanAssertion\n",
-        {{failsBooleanAssertion, "failsBooleanAssertion"}});
+        {failsBooleanAssertion, "failsBooleanAssertion"});
 }
 
 void passedNegativeBooleanAssertionShowsPassedMessage() {
     assertEqual("pass\n",
-        {{passesNegativeBooleanAssertion, "passesNegativeBooleanAssertion"}});
+        {passesNegativeBooleanAssertion, "passesNegativeBooleanAssertion"});
 }
 
 void failedNegativeBooleanAssertionShowsFailedMessage() {
     assertEqual("fail failsNegativeBooleanAssertion\n",
-        {{failsNegativeBooleanAssertion, "failsNegativeBooleanAssertion"}});
+        {failsNegativeBooleanAssertion, "failsNegativeBooleanAssertion"});
 }
 
 void main() {
