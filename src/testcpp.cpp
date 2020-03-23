@@ -32,4 +32,6 @@ void assertEqual(const std::string &expected, const std::string &actual) {
     if (expected != actual)
         failed();
 }
+
+void assertEqual(int expected, int actual) {}
 }

@@ -6,6 +6,8 @@ namespace testcpp {
 namespace {
 void passes() { assertEqual("a", "a"); }
 
+void passesIntegerComparison() { assertEqual(1, 1); }
+
 void fails() { assertEqual("a", "b"); }
 
 void assertEqual(const std::string &s, const std::stringstream &stream) {
@@ -37,6 +39,18 @@ void failsBothTestsShowsFailedMessage() {
     assertEqual("fail fail1\nfail fail2\n", stream);
 }
 
+void passesLastTestButFailsFirstShowsFailedMessage() {
+    std::stringstream stream;
+    test({{fails, "fails"}, {passes, "passes"}}, stream);
+    assertEqual("fail fails\n", stream);
+}
+
+void passedOnlyTestShowsPassedMessageWithIntegerComparison() {
+    std::stringstream stream;
+    test({{passesIntegerComparison, "integerComparisonPass"}}, stream);
+    assertEqual("pass\n", stream);
+}
+
 void main() {
     test(
         {{passedOnlyTestShowsPassedMessage, "passedOnlyTestShowsPassedMessage"},
@@ -45,7 +59,11 @@ void main() {
             {failedOneOfTwoTestsShowsFailedMessage,
                 "failedOneOfTwoTestsShowsFailedMessage"},
             {failsBothTestsShowsFailedMessage,
-                "failsBothTestsShowsFailedMessage"}},
+                "failsBothTestsShowsFailedMessage"},
+            {passesLastTestButFailsFirstShowsFailedMessage,
+                "passesLastTestButFailsFirstShowsFailedMessage"},
+            {passedOnlyTestShowsPassedMessageWithIntegerComparison,
+                "passedOnlyTestShowsPassedMessageWithIntegerComparison"}},
         std::cout);
 }
 }
