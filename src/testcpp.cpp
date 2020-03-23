@@ -37,4 +37,6 @@ void assertEqual(int expected, int actual) {
     if (expected != actual)
         failed();
 }
+
+void assertTrue(bool) {}
 }

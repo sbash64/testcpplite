@@ -8,6 +8,8 @@ void passes() { assertEqual("a", "a"); }
 
 void passesIntegerComparison() { assertEqual(1, 1); }
 
+void passesBooleanAssertion() { assertTrue(true); }
+
 void fails() { assertEqual("a", "b"); }
 
 void failsIntegerComparison() { assertEqual(1, 0); }
@@ -59,6 +61,12 @@ void failedIntegerComparisonShowsFailedMessage() {
     assertEqual("fail failsIntegerComparison\n", stream);
 }
 
+void passedBooleanAssertionShowsPassedMessage() {
+    std::stringstream stream;
+    test({{passesBooleanAssertion, "passesBooleanAssertion"}}, stream);
+    assertEqual("pass\n", stream);
+}
+
 void main() {
     test(
         {{passedOnlyTestShowsPassedMessage, "passedOnlyTestShowsPassedMessage"},
@@ -73,7 +81,9 @@ void main() {
             {passedIntegerComparisonShowsPassedMessage,
                 "passedIntegerComparisonShowsPassedMessage"},
             {failedIntegerComparisonShowsFailedMessage,
-                "failedIntegerComparisonShowsFailedMessage"}},
+                "failedIntegerComparisonShowsFailedMessage"},
+            {passedBooleanAssertionShowsPassedMessage,
+                "passedBooleanAssertionShowsPassedMessage"}},
         std::cout);
 }
 }
