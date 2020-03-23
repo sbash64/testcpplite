@@ -36,10 +36,7 @@ void failsBothTestsShowsFailedMessage() {
     test({{fails, "fail1"}, {fails, "fail2"}}, stream);
     assertEqual("fail fail1\nfail fail2\n", stream);
 }
-}
-}
 
-namespace testcpp {
 void main() {
     test(
         {{passedOnlyTestShowsPassedMessage, "passedOnlyTestShowsPassedMessage"},
@@ -50,6 +47,7 @@ void main() {
             {failsBothTestsShowsFailedMessage,
                 "failsBothTestsShowsFailedMessage"}},
         std::cout);
+}
 }
 }
 
