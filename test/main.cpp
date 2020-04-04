@@ -50,7 +50,7 @@ auto expectationMessage(const std::string &expected, const std::string &actual)
 };
 
 auto expectsAActualBMessage() -> std::string {
-    return "    expected \"a\", actual \"b\"\n";
+    return expectationMessage("\"a\"", "\"b\"");
 };
 
 void passedOnlyTestShowsPassedMessage(TestResult &result) {
