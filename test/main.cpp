@@ -47,35 +47,38 @@ auto expectationMessage(const std::string &expected, const std::string &actual)
     return "    expected " + expected + ", actual " + actual + "\n";
 };
 
-auto expectsAActualBMessage() -> std::string {
-    return expectationMessage("\"a\"", "\"b\"");
-};
+auto failMessage(const std::string &name) -> std::string {
+    return "fail " + name + '\n';
+}
+
+auto failsExpectsAActualBMessage(const std::string &name) -> std::string {
+    return failMessage(name) + expectationMessage("\"a\"", "\"b\"");
+}
 
 void passedOnlyTestShowsPassedMessage(TestResult &result) {
     assertEqual(result, "pass\n", {passes, "passes"});
 }
 
 void failedOnlyTestShowsFailedMessage(TestResult &result) {
-    assertEqual(result, "fail expectsAActualB\n" + expectsAActualBMessage(),
+    assertEqual(result, failsExpectsAActualBMessage("expectsAActualB"),
         {expectsAActualB, "expectsAActualB"});
 }
 
 void failedOneOfTwoTestsShowsFailedMessage(TestResult &result) {
-    assertEqual(result, "fail expectsAActualB\n" + expectsAActualBMessage(),
+    assertEqual(result, failsExpectsAActualBMessage("expectsAActualB"),
         {{passes, "passes"}, {expectsAActualB, "expectsAActualB"}});
 }
 
 void failsBothTestsShowsFailedMessage(TestResult &result) {
     assertEqual(result,
-        "fail expectsAActualB1\n" + expectsAActualBMessage() +
-            "fail expectsAActualB2\n    "
-            "expected \"a\", actual \"b\"\n",
+        failsExpectsAActualBMessage("expectsAActualB1") +
+            failsExpectsAActualBMessage("expectsAActualB2"),
         {{expectsAActualB, "expectsAActualB1"},
             {expectsAActualB, "expectsAActualB2"}});
 }
 
 void passesLastTestButFailsFirstShowsFailedMessage(TestResult &result) {
-    assertEqual(result, "fail expectsAActualB\n" + expectsAActualBMessage(),
+    assertEqual(result, failsExpectsAActualBMessage("expectsAActualB"),
         {{expectsAActualB, "expectsAActualB"}, {passes, "passes"}});
 }
 
@@ -86,7 +89,7 @@ void passedIntegerComparisonShowsPassedMessage(TestResult &result) {
 
 void failedIntegerComparisonShowsFailedMessage(TestResult &result) {
     assertEqual(result,
-        "fail expectsOneActualZero\n" + expectationMessage("1", "0"),
+        failMessage("expectsOneActualZero") + expectationMessage("1", "0"),
         {expectsOneActualZero, "expectsOneActualZero"});
 }
 
@@ -97,7 +100,8 @@ void passedBooleanAssertionShowsPassedMessage(TestResult &result) {
 
 void failedBooleanAssertionShowsFailedMessage(TestResult &result) {
     assertEqual(result,
-        "fail expectsTrueActualFalse\n" + expectationMessage("true", "false"),
+        failMessage("expectsTrueActualFalse") +
+            expectationMessage("true", "false"),
         {expectsTrueActualFalse, "expectsTrueActualFalse"});
 }
 
@@ -108,7 +112,8 @@ void passedNegativeBooleanAssertionShowsPassedMessage(TestResult &result) {
 
 void failedNegativeBooleanAssertionShowsFailedMessage(TestResult &result) {
     assertEqual(result,
-        "fail expectsFalseActualTrue\n" + expectationMessage("false", "true"),
+        failMessage("expectsFalseActualTrue") +
+            expectationMessage("false", "true"),
         {expectsFalseActualTrue, "expectsFalseActualTrue"});
 }
 
