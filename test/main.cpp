@@ -22,10 +22,15 @@ void passesNegativeBooleanAssertion(TestResult &result) {
 
 void expectsFalseActualTrue(TestResult &result) { assertFalse(result, true); }
 
-auto test(const std::vector<Test> &tests) -> std::stringstream {
+auto testStream(const std::vector<Test> &tests) -> std::stringstream {
     std::stringstream stream;
     test(tests, stream);
     return stream;
+}
+
+auto test(const std::vector<Test> &tests) -> bool {
+    std::stringstream stream;
+    return test(tests, stream);
 }
 
 void assertEqual(
@@ -35,11 +40,11 @@ void assertEqual(
 
 void assertEqual(
     TestResult &result, const std::string &s, const std::vector<Test> &tests) {
-    assertEqual(result, s, test(tests));
+    assertEqual(result, s, testStream(tests));
 }
 
 void assertEqual(TestResult &result, const std::string &s, const Test &t) {
-    assertEqual(result, s, test({t}));
+    assertEqual(result, s, testStream({t}));
 }
 
 auto withNewLine(const std::string &s) -> std::string { return s + '\n'; }
@@ -64,8 +69,7 @@ void passedOnlyTestShowsPassedMessage(TestResult &result) {
 }
 
 void passedReturnsTrue(TestResult &result) {
-    std::stringstream stream;
-    assertTrue(result, testcpplite::test({{passes, "myTest"}}, stream));
+    assertTrue(result, test({{passes, "myTest"}}));
 }
 
 void failedOnlyTestShowsFailedMessage(TestResult &result) {
