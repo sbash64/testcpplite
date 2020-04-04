@@ -10,19 +10,17 @@ void expectsAActualB(TestResult &result) { assertEqual(result, "a", "b"); }
 
 void passesIntegerComparison(TestResult &result) { assertEqual(result, 1, 1); }
 
-void failsIntegerComparison(TestResult &result) { assertEqual(result, 1, 0); }
+void expectsOneActualZero(TestResult &result) { assertEqual(result, 1, 0); }
 
 void passesBooleanAssertion(TestResult &result) { assertTrue(result, true); }
 
-void failsBooleanAssertion(TestResult &result) { assertTrue(result, false); }
+void expectsTrueActualFalse(TestResult &result) { assertTrue(result, false); }
 
 void passesNegativeBooleanAssertion(TestResult &result) {
     assertFalse(result, false);
 }
 
-void failsNegativeBooleanAssertion(TestResult &result) {
-    assertFalse(result, true);
-}
+void expectsFalseActualTrue(TestResult &result) { assertFalse(result, true); }
 
 auto test(const std::vector<Test> &tests) -> std::stringstream {
     std::stringstream stream;
@@ -58,37 +56,38 @@ void passedOnlyTestShowsPassedMessage(TestResult &result) {
 }
 
 void failedOnlyTestShowsFailedMessage(TestResult &result) {
-    assertEqual(result, "fail fails\n" + expectsAActualBMessage(),
-        {expectsAActualB, "fails"});
+    assertEqual(result, "fail expectsAActualB\n" + expectsAActualBMessage(),
+        {expectsAActualB, "expectsAActualB"});
 }
 
 void failedOneOfTwoTestsShowsFailedMessage(TestResult &result) {
-    assertEqual(result, "fail fails\n" + expectsAActualBMessage(),
-        {{passes, "passes"}, {expectsAActualB, "fails"}});
+    assertEqual(result, "fail expectsAActualB\n" + expectsAActualBMessage(),
+        {{passes, "passes"}, {expectsAActualB, "expectsAActualB"}});
 }
 
 void failsBothTestsShowsFailedMessage(TestResult &result) {
     assertEqual(result,
-        "fail fail1\n" + expectsAActualBMessage() +
-            "fail fail2\n    "
+        "fail expectsAActualB1\n" + expectsAActualBMessage() +
+            "fail expectsAActualB2\n    "
             "expected \"a\", actual \"b\"\n",
-        {{expectsAActualB, "fail1"}, {expectsAActualB, "fail2"}});
+        {{expectsAActualB, "expectsAActualB1"},
+            {expectsAActualB, "expectsAActualB2"}});
 }
 
 void passesLastTestButFailsFirstShowsFailedMessage(TestResult &result) {
-    assertEqual(result, "fail fails\n" + expectsAActualBMessage(),
-        {{expectsAActualB, "fails"}, {passes, "passes"}});
+    assertEqual(result, "fail expectsAActualB\n" + expectsAActualBMessage(),
+        {{expectsAActualB, "expectsAActualB"}, {passes, "passes"}});
 }
 
 void passedIntegerComparisonShowsPassedMessage(TestResult &result) {
     assertEqual(
-        result, "pass\n", {passesIntegerComparison, "integerComparisonPass"});
+        result, "pass\n", {passesIntegerComparison, "passesIntegerComparison"});
 }
 
 void failedIntegerComparisonShowsFailedMessage(TestResult &result) {
     assertEqual(result,
-        "fail failsIntegerComparison\n" + expectationMessage("1", "0"),
-        {failsIntegerComparison, "failsIntegerComparison"});
+        "fail expectsOneActualZero\n" + expectationMessage("1", "0"),
+        {expectsOneActualZero, "expectsOneActualZero"});
 }
 
 void passedBooleanAssertionShowsPassedMessage(TestResult &result) {
@@ -98,8 +97,8 @@ void passedBooleanAssertionShowsPassedMessage(TestResult &result) {
 
 void failedBooleanAssertionShowsFailedMessage(TestResult &result) {
     assertEqual(result,
-        "fail failsBooleanAssertion\n" + expectationMessage("true", "false"),
-        {failsBooleanAssertion, "failsBooleanAssertion"});
+        "fail expectsTrueActualFalse\n" + expectationMessage("true", "false"),
+        {expectsTrueActualFalse, "expectsTrueActualFalse"});
 }
 
 void passedNegativeBooleanAssertionShowsPassedMessage(TestResult &result) {
@@ -109,9 +108,8 @@ void passedNegativeBooleanAssertionShowsPassedMessage(TestResult &result) {
 
 void failedNegativeBooleanAssertionShowsFailedMessage(TestResult &result) {
     assertEqual(result,
-        "fail failsNegativeBooleanAssertion\n" +
-            expectationMessage("false", "true"),
-        {failsNegativeBooleanAssertion, "failsNegativeBooleanAssertion"});
+        "fail expectsFalseActualTrue\n" + expectationMessage("false", "true"),
+        {expectsFalseActualTrue, "expectsFalseActualTrue"});
 }
 
 void main() {
