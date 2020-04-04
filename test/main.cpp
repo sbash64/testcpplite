@@ -44,6 +44,11 @@ void assertEqual(TestResult &result, const std::string &s, const Test &t) {
     assertEqual(result, s, test({t}));
 }
 
+auto expectationMessage(const std::string &expected, const std::string &actual)
+    -> std::string {
+    return "    expected " + expected + ", actual " + actual + "\n";
+};
+
 auto expectsAActualBMessage() -> std::string {
     return "    expected \"a\", actual \"b\"\n";
 };
@@ -64,8 +69,9 @@ void failedOneOfTwoTestsShowsFailedMessage(TestResult &result) {
 
 void failsBothTestsShowsFailedMessage(TestResult &result) {
     assertEqual(result,
-        "fail fail1\n    expected \"a\", actual \"b\"\nfail fail2\n    "
-        "expected \"a\", actual \"b\"\n",
+        "fail fail1\n" + expectsAActualBMessage() +
+            "fail fail2\n    "
+            "expected \"a\", actual \"b\"\n",
         {{expectsAActualB, "fail1"}, {expectsAActualB, "fail2"}});
 }
 
@@ -81,7 +87,7 @@ void passedIntegerComparisonShowsPassedMessage(TestResult &result) {
 
 void failedIntegerComparisonShowsFailedMessage(TestResult &result) {
     assertEqual(result,
-        "fail failsIntegerComparison\n    expected 1, actual 0\n",
+        "fail failsIntegerComparison\n" + expectationMessage("1", "0"),
         {failsIntegerComparison, "failsIntegerComparison"});
 }
 
@@ -92,7 +98,7 @@ void passedBooleanAssertionShowsPassedMessage(TestResult &result) {
 
 void failedBooleanAssertionShowsFailedMessage(TestResult &result) {
     assertEqual(result,
-        "fail failsBooleanAssertion\n    expected true, actual false\n",
+        "fail failsBooleanAssertion\n" + expectationMessage("true", "false"),
         {failsBooleanAssertion, "failsBooleanAssertion"});
 }
 
@@ -103,7 +109,8 @@ void passedNegativeBooleanAssertionShowsPassedMessage(TestResult &result) {
 
 void failedNegativeBooleanAssertionShowsFailedMessage(TestResult &result) {
     assertEqual(result,
-        "fail failsNegativeBooleanAssertion\n    expected false, actual true\n",
+        "fail failsNegativeBooleanAssertion\n" +
+            expectationMessage("false", "true"),
         {failsNegativeBooleanAssertion, "failsNegativeBooleanAssertion"});
 }
 
