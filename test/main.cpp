@@ -4,21 +4,25 @@
 
 namespace testcpp {
 namespace {
-void passes() { assertEqual("a", "a"); }
+void passes(TestResult &result) { assertEqual(result, "a", "a"); }
 
-void fails() { assertEqual("a", "b"); }
+void fails(TestResult &result) { assertEqual(result, "a", "b"); }
 
-void passesIntegerComparison() { assertEqual(1, 1); }
+void passesIntegerComparison(TestResult &result) { assertEqual(result, 1, 1); }
 
-void failsIntegerComparison() { assertEqual(1, 0); }
+void failsIntegerComparison(TestResult &result) { assertEqual(result, 1, 0); }
 
-void passesBooleanAssertion() { assertTrue(true); }
+void passesBooleanAssertion(TestResult &result) { assertTrue(result, true); }
 
-void failsBooleanAssertion() { assertTrue(false); }
+void failsBooleanAssertion(TestResult &result) { assertTrue(result, false); }
 
-void passesNegativeBooleanAssertion() { assertFalse(false); }
+void passesNegativeBooleanAssertion(TestResult &result) {
+    assertFalse(result, false);
+}
 
-void failsNegativeBooleanAssertion() { assertFalse(true); }
+void failsNegativeBooleanAssertion(TestResult &result) {
+    assertFalse(result, true);
+}
 
 auto test(const std::vector<Test> &tests) -> std::stringstream {
     std::stringstream stream;
@@ -26,65 +30,69 @@ auto test(const std::vector<Test> &tests) -> std::stringstream {
     return stream;
 }
 
-void assertEqual(const std::string &s, const std::stringstream &stream) {
+void assertEqual(
+    TestResult &result, const std::string &s, const std::stringstream &stream) {
     std::cout << "expected: " << s << "actual: " << stream.str() << '\n';
-    testcpp::assertEqual(s, stream.str());
+    testcpp::assertEqual(result, s, stream.str());
 }
 
-void assertEqual(const std::string &s, const std::vector<Test> &tests) {
-    assertEqual(s, test(tests));
+void assertEqual(
+    TestResult &result, const std::string &s, const std::vector<Test> &tests) {
+    assertEqual(result, s, test(tests));
 }
 
-void assertEqual(const std::string &s, const Test &t) {
-    assertEqual(s, test({t}));
+void assertEqual(TestResult &result, const std::string &s, const Test &t) {
+    assertEqual(result, s, test({t}));
 }
 
-void passedOnlyTestShowsPassedMessage() {
-    assertEqual("pass\n", {passes, "passes"});
+void passedOnlyTestShowsPassedMessage(TestResult &result) {
+    assertEqual(result, "pass\n", {passes, "passes"});
 }
 
-void failedOnlyTestShowsFailedMessage() {
-    assertEqual("fail fails\n", {fails, "fails"});
+void failedOnlyTestShowsFailedMessage(TestResult &result) {
+    assertEqual(result, "fail fails\n", {fails, "fails"});
 }
 
-void failedOneOfTwoTestsShowsFailedMessage() {
-    assertEqual("fail fails\n", {{passes, "passes"}, {fails, "fails"}});
+void failedOneOfTwoTestsShowsFailedMessage(TestResult &result) {
+    assertEqual(result, "fail fails\n", {{passes, "passes"}, {fails, "fails"}});
 }
 
-void failsBothTestsShowsFailedMessage() {
+void failsBothTestsShowsFailedMessage(TestResult &result) {
+    assertEqual(result, "fail fail1\nfail fail2\n",
+        {{fails, "fail1"}, {fails, "fail2"}});
+}
+
+void passesLastTestButFailsFirstShowsFailedMessage(TestResult &result) {
+    assertEqual(result, "fail fails\n", {{fails, "fails"}, {passes, "passes"}});
+}
+
+void passedIntegerComparisonShowsPassedMessage(TestResult &result) {
     assertEqual(
-        "fail fail1\nfail fail2\n", {{fails, "fail1"}, {fails, "fail2"}});
+        result, "pass\n", {passesIntegerComparison, "integerComparisonPass"});
 }
 
-void passesLastTestButFailsFirstShowsFailedMessage() {
-    assertEqual("fail fails\n", {{fails, "fails"}, {passes, "passes"}});
-}
-
-void passedIntegerComparisonShowsPassedMessage() {
-    assertEqual("pass\n", {passesIntegerComparison, "integerComparisonPass"});
-}
-
-void failedIntegerComparisonShowsFailedMessage() {
-    assertEqual("fail failsIntegerComparison\n",
+void failedIntegerComparisonShowsFailedMessage(TestResult &result) {
+    assertEqual(result, "fail failsIntegerComparison\n",
         {failsIntegerComparison, "failsIntegerComparison"});
 }
 
-void passedBooleanAssertionShowsPassedMessage() {
-    assertEqual("pass\n", {passesBooleanAssertion, "passesBooleanAssertion"});
+void passedBooleanAssertionShowsPassedMessage(TestResult &result) {
+    assertEqual(
+        result, "pass\n", {passesBooleanAssertion, "passesBooleanAssertion"});
 }
 
-void failedBooleanAssertionShowsFailedMessage() {
-    assertEqual("fail failsBooleanAssertion\n",
+void failedBooleanAssertionShowsFailedMessage(TestResult &result) {
+    assertEqual(result, "fail failsBooleanAssertion\n",
         {failsBooleanAssertion, "failsBooleanAssertion"});
 }
 
-void passedNegativeBooleanAssertionShowsPassedMessage() {
-    assertEqual("pass\n",
+void passedNegativeBooleanAssertionShowsPassedMessage(TestResult &result) {
+    assertEqual(result, "pass\n",
         {passesNegativeBooleanAssertion, "passesNegativeBooleanAssertion"});
 }
 
-void failedNegativeBooleanAssertionShowsFailedMessage() {
-    assertEqual("fail failsNegativeBooleanAssertion\n",
+void failedNegativeBooleanAssertionShowsFailedMessage(TestResult &result) {
+    assertEqual(result, "fail failsNegativeBooleanAssertion\n",
         {failsNegativeBooleanAssertion, "failsNegativeBooleanAssertion"});
 }
 

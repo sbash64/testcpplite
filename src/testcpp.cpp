@@ -3,14 +3,15 @@
 namespace testcpp {
 static bool failed_;
 
-static void failed() {
-    failed_ = true;
-}
+static void failed() { failed_ = true; }
+
+struct TestResult {};
 
 void test(const std::vector<Test> &tests, std::ostream &stream) {
     bool passed{true};
     for (const auto &test : tests) {
-        test.f();
+        TestResult result;
+        test.f(result);
         if (failed_) {
             passed = false;
             stream << "fail " << test.name.c_str() << '\n';
@@ -21,22 +22,23 @@ void test(const std::vector<Test> &tests, std::ostream &stream) {
         stream << "pass\n";
 }
 
-void assertEqual(const std::string &expected, const std::string &actual) {
+void assertEqual(
+    TestResult &, const std::string &expected, const std::string &actual) {
     if (expected != actual)
         failed();
 }
 
-void assertEqual(int expected, int actual) {
+void assertEqual(TestResult &, int expected, int actual) {
     if (expected != actual)
         failed();
 }
 
-void assertTrue(bool c) {
+void assertTrue(TestResult &, bool c) {
     if (!c)
         failed();
 }
 
-void assertFalse(bool c) {
+void assertFalse(TestResult &, bool c) {
     if (c)
         failed();
 }

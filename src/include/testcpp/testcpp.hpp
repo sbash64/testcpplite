@@ -7,16 +7,19 @@
 #include <ostream>
 
 namespace testcpp {
+struct TestResult;
+
 struct Test {
-    std::function<void()> f;
+    std::function<void(TestResult &)> f;
     std::string name;
 };
 
 void test(const std::vector<Test> &tests, std::ostream &stream);
-void assertEqual(const std::string &expected, const std::string &actual);
-void assertEqual(int expected, int actual);
-void assertTrue(bool);
-void assertFalse(bool);
+void assertEqual(
+    TestResult &, const std::string &expected, const std::string &actual);
+void assertEqual(TestResult &, int expected, int actual);
+void assertTrue(TestResult &, bool);
+void assertFalse(TestResult &, bool);
 }
 
 #endif
