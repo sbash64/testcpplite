@@ -130,11 +130,11 @@ void failedNegativeBooleanAssertionShowsFailedMessage(TestResult &result) {
         {expectsFalseActualTrue, "myTest"});
 }
 
-void main() {
-    testcpplite::test(
+int main() {
+    return testcpplite::test(
         {{passedOnlyTestShowsPassedMessage, "passedOnlyTestShowsPassedMessage"},
-            {passedReturnsZero, "passedReturnsTrue"},
-            {failedReturnsOne, "failedReturnsFalse"},
+            {passedReturnsZero, "passedReturnsZero"},
+            {failedReturnsOne, "failedReturnsOne"},
             {failedOnlyTestShowsFailedMessage,
                 "failedOnlyTestShowsFailedMessage"},
             {failedOneOfTwoTestsShowsFailedMessage,
@@ -160,4 +160,4 @@ void main() {
 }
 }
 
-int main() { testcpplite::main(); }
+int main() { return testcpplite::main(); }
