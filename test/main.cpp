@@ -8,6 +8,8 @@ void passes(TestResult &result) { assertEqual(result, "a", "a"); }
 
 void expectsAActualB(TestResult &result) { assertEqual(result, "a", "b"); }
 
+void fails(TestResult &result) { expectsAActualB(result); }
+
 void passesIntegerComparison(TestResult &result) { assertEqual(result, 1, 1); }
 
 void expectsOneActualZero(TestResult &result) { assertEqual(result, 1, 0); }
@@ -72,6 +74,10 @@ void passedReturnsTrue(TestResult &result) {
     assertTrue(result, test({{passes, "myTest"}}));
 }
 
+void failedReturnsFalse(TestResult &result) {
+    assertFalse(result, test({{fails, "myTest"}}));
+}
+
 void failedOnlyTestShowsFailedMessage(TestResult &result) {
     assertEqual(result, failsExpectsAActualBMessage("myTest"),
         {expectsAActualB, "myTest"});
@@ -128,6 +134,7 @@ void main() {
     testcpplite::test(
         {{passedOnlyTestShowsPassedMessage, "passedOnlyTestShowsPassedMessage"},
             {passedReturnsTrue, "passedReturnsTrue"},
+            {failedReturnsFalse, "failedReturnsFalse"},
             {failedOnlyTestShowsFailedMessage,
                 "failedOnlyTestShowsFailedMessage"},
             {failedOneOfTwoTestsShowsFailedMessage,

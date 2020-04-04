@@ -36,7 +36,7 @@ auto test(const std::vector<Test> &tests, std::ostream &stream) -> bool {
     }
     if (passed)
         stream << "pass\n";
-    return true;
+    return passed;
 }
 
 void assertEqual(TestResult &result, const std::string &expected,
