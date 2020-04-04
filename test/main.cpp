@@ -42,21 +42,25 @@ void assertEqual(TestResult &result, const std::string &s, const Test &t) {
     assertEqual(result, s, test({t}));
 }
 
+auto withNewLine(const std::string &s) -> std::string { return s + '\n'; }
+
 auto expectationMessage(const std::string &expected, const std::string &actual)
     -> std::string {
-    return "    expected " + expected + ", actual " + actual + "\n";
+    return withNewLine("    expected " + expected + ", actual " + actual);
 };
 
 auto failMessage(const std::string &name) -> std::string {
-    return "fail " + name + '\n';
+    return withNewLine("fail " + name);
 }
 
 auto failsExpectsAActualBMessage(const std::string &name) -> std::string {
     return failMessage(name) + expectationMessage("\"a\"", "\"b\"");
 }
 
+auto passMessage() -> std::string { return withNewLine("pass"); };
+
 void passedOnlyTestShowsPassedMessage(TestResult &result) {
-    assertEqual(result, "pass\n", {passes, "passes"});
+    assertEqual(result, passMessage(), {passes, "passes"});
 }
 
 void failedOnlyTestShowsFailedMessage(TestResult &result) {
@@ -83,8 +87,8 @@ void passesLastTestButFailsFirstShowsFailedMessage(TestResult &result) {
 }
 
 void passedIntegerComparisonShowsPassedMessage(TestResult &result) {
-    assertEqual(
-        result, "pass\n", {passesIntegerComparison, "passesIntegerComparison"});
+    assertEqual(result, passMessage(),
+        {passesIntegerComparison, "passesIntegerComparison"});
 }
 
 void failedIntegerComparisonShowsFailedMessage(TestResult &result) {
@@ -94,8 +98,8 @@ void failedIntegerComparisonShowsFailedMessage(TestResult &result) {
 }
 
 void passedBooleanAssertionShowsPassedMessage(TestResult &result) {
-    assertEqual(
-        result, "pass\n", {passesBooleanAssertion, "passesBooleanAssertion"});
+    assertEqual(result, passMessage(),
+        {passesBooleanAssertion, "passesBooleanAssertion"});
 }
 
 void failedBooleanAssertionShowsFailedMessage(TestResult &result) {
@@ -106,7 +110,7 @@ void failedBooleanAssertionShowsFailedMessage(TestResult &result) {
 }
 
 void passedNegativeBooleanAssertionShowsPassedMessage(TestResult &result) {
-    assertEqual(result, "pass\n",
+    assertEqual(result, passMessage(),
         {passesNegativeBooleanAssertion, "passesNegativeBooleanAssertion"});
 }
 
