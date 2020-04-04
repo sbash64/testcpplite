@@ -32,7 +32,6 @@ auto test(const std::vector<Test> &tests) -> std::stringstream {
 
 void assertEqual(
     TestResult &result, const std::string &s, const std::stringstream &stream) {
-    std::cout << "expected: " << s << "actual: " << stream.str() << '\n';
     testcpp::assertEqual(result, s, stream.str());
 }
 
@@ -50,20 +49,25 @@ void passedOnlyTestShowsPassedMessage(TestResult &result) {
 }
 
 void failedOnlyTestShowsFailedMessage(TestResult &result) {
-    assertEqual(result, "fail fails\n", {fails, "fails"});
+    assertEqual(result, "fail fails\n    expected \"a\", actual \"b\"\n",
+        {fails, "fails"});
 }
 
 void failedOneOfTwoTestsShowsFailedMessage(TestResult &result) {
-    assertEqual(result, "fail fails\n", {{passes, "passes"}, {fails, "fails"}});
+    assertEqual(result, "fail fails\n    expected \"a\", actual \"b\"\n",
+        {{passes, "passes"}, {fails, "fails"}});
 }
 
 void failsBothTestsShowsFailedMessage(TestResult &result) {
-    assertEqual(result, "fail fail1\nfail fail2\n",
+    assertEqual(result,
+        "fail fail1\n    expected \"a\", actual \"b\"\nfail fail2\n    "
+        "expected \"a\", actual \"b\"\n",
         {{fails, "fail1"}, {fails, "fail2"}});
 }
 
 void passesLastTestButFailsFirstShowsFailedMessage(TestResult &result) {
-    assertEqual(result, "fail fails\n", {{fails, "fails"}, {passes, "passes"}});
+    assertEqual(result, "fail fails\n    expected \"a\", actual \"b\"\n",
+        {{fails, "fails"}, {passes, "passes"}});
 }
 
 void passedIntegerComparisonShowsPassedMessage(TestResult &result) {
@@ -72,7 +76,8 @@ void passedIntegerComparisonShowsPassedMessage(TestResult &result) {
 }
 
 void failedIntegerComparisonShowsFailedMessage(TestResult &result) {
-    assertEqual(result, "fail failsIntegerComparison\n",
+    assertEqual(result,
+        "fail failsIntegerComparison\n    expected 1, actual 0\n",
         {failsIntegerComparison, "failsIntegerComparison"});
 }
 
@@ -82,7 +87,8 @@ void passedBooleanAssertionShowsPassedMessage(TestResult &result) {
 }
 
 void failedBooleanAssertionShowsFailedMessage(TestResult &result) {
-    assertEqual(result, "fail failsBooleanAssertion\n",
+    assertEqual(result,
+        "fail failsBooleanAssertion\n    expected true, actual false\n",
         {failsBooleanAssertion, "failsBooleanAssertion"});
 }
 
@@ -92,7 +98,8 @@ void passedNegativeBooleanAssertionShowsPassedMessage(TestResult &result) {
 }
 
 void failedNegativeBooleanAssertionShowsFailedMessage(TestResult &result) {
-    assertEqual(result, "fail failsNegativeBooleanAssertion\n",
+    assertEqual(result,
+        "fail failsNegativeBooleanAssertion\n    expected false, actual true\n",
         {failsNegativeBooleanAssertion, "failsNegativeBooleanAssertion"});
 }
 

@@ -2,6 +2,8 @@
 
 namespace testcpp {
 struct TestResult {
+    std::string expected;
+    std::string actual;
     bool failed;
 };
 
@@ -15,6 +17,8 @@ void test(const std::vector<Test> &tests, std::ostream &stream) {
         if (result.failed) {
             passed = false;
             stream << "fail " << test.name.c_str() << '\n';
+            stream << "    expected " << result.expected << ", actual "
+                   << result.actual << "\n";
         }
     }
     if (passed)
@@ -23,22 +27,34 @@ void test(const std::vector<Test> &tests, std::ostream &stream) {
 
 void assertEqual(TestResult &result, const std::string &expected,
     const std::string &actual) {
-    if (expected != actual)
+    if (expected != actual) {
+        result.expected = '"' + expected + '"';
+        result.actual = '"' + actual + '"';
         fail(result);
+    }
 }
 
 void assertEqual(TestResult &result, int expected, int actual) {
-    if (expected != actual)
+    if (expected != actual) {
+        result.expected = std::to_string(expected);
+        result.actual = std::to_string(actual);
         fail(result);
+    }
 }
 
 void assertTrue(TestResult &result, bool c) {
-    if (!c)
+    if (!c) {
+        result.expected = "true";
+        result.actual = "false";
         fail(result);
+    }
 }
 
 void assertFalse(TestResult &result, bool c) {
-    if (c)
+    if (c) {
+        result.expected = "false";
+        result.actual = "true";
         fail(result);
+    }
 }
 }
