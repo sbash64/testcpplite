@@ -6,7 +6,7 @@ node {
 def docker_cmake_build_with_tests(compiler) {
     stage(compiler) {
         node {
-            checkout_scm()
+            checkout scm
 
             docker_image(compiler).inside {
                 dir('build') {
@@ -17,10 +17,6 @@ def docker_cmake_build_with_tests(compiler) {
             }
         }
     }
-}
-
-def checkout_scm() {
-    checkout scm
 }
 
 def cmake_generate_build_with_tests() {
