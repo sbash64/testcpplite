@@ -1,31 +1,30 @@
 #include "testcpp.hpp"
 
 namespace testcpp {
-static std::string failedName_;
-static std::string currentName_;
+static const char *failedName;
+static const char *currentName;
 static bool failed_;
 
 static void failed() {
     failed_ = true;
-    failedName_ = currentName_;
+    failedName = currentName;
 }
 
 void test(const std::vector<Test> &tests, std::ostream &stream) {
-    std::vector<std::string> failureNames;
+    bool passed{true};
     for (const auto &test : tests) {
-        auto restoreName{currentName_};
-        currentName_ = test.name;
+        const auto restoreName{currentName};
+        currentName = test.name.c_str();
         test.f();
-        if (failed_)
-            failureNames.push_back(failedName_);
+        if (failed_) {
+            passed = false;
+            stream << "fail " << failedName << '\n';
+        }
         failed_ = false;
-        currentName_ = restoreName;
+        currentName = restoreName;
     }
-    if (failureNames.empty())
+    if (passed)
         stream << "pass\n";
-    else
-        for (const auto &name : failureNames)
-            stream << "fail " << name << '\n';
 }
 
 void assertEqual(const std::string &expected, const std::string &actual) {
