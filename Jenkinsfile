@@ -20,7 +20,7 @@ def docker_cmake_build_with_tests(compiler) {
 }
 
 def cmake_generate_build_with_tests() {
-    cmake_generate_build('-DCMAKE_BUILD_TYPE=Release')
+    cmake_generate_build('-DWITH_TESTS=1 -DCMAKE_BUILD_TYPE=Release')
 }
 
 def cmake_generate_build(flags) {
