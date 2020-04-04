@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10.0)
-project(TestCppLite VERSION 0.0.1 LANGUAGES CXX)
+project(TestCppLite VERSION 1.0.0 LANGUAGES CXX)
 add_subdirectory(src)
 enable_testing()
 add_subdirectory(test)
