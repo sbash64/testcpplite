@@ -63,6 +63,11 @@ void passedOnlyTestShowsPassedMessage(TestResult &result) {
     assertEqual(result, passMessage(), {passes, "myTest"});
 }
 
+void passedReturnsTrue(TestResult &result) {
+    std::stringstream stream;
+    assertTrue(result, testcpplite::test({{passes, "myTest"}}, stream));
+}
+
 void failedOnlyTestShowsFailedMessage(TestResult &result) {
     assertEqual(result, failsExpectsAActualBMessage("myTest"),
         {expectsAActualB, "myTest"});
@@ -118,6 +123,7 @@ void failedNegativeBooleanAssertionShowsFailedMessage(TestResult &result) {
 void main() {
     testcpplite::test(
         {{passedOnlyTestShowsPassedMessage, "passedOnlyTestShowsPassedMessage"},
+            {passedReturnsTrue, "passedReturnsTrue"},
             {failedOnlyTestShowsFailedMessage,
                 "failedOnlyTestShowsFailedMessage"},
             {failedOneOfTwoTestsShowsFailedMessage,
