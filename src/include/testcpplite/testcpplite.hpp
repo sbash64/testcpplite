@@ -1,12 +1,12 @@
-#ifndef TESTCPP_SRC_INCLUDE_TESTCPP_TESTCPP_HPP_
-#define TESTCPP_SRC_INCLUDE_TESTCPP_TESTCPP_HPP_
+#ifndef TESTCPPLITE_SRC_INCLUDE_TESTCPPLITE_TESTCPPLITE_HPP_
+#define TESTCPPLITE_SRC_INCLUDE_TESTCPPLITE_TESTCPPLITE_HPP_
 
 #include <string>
 #include <vector>
 #include <functional>
 #include <ostream>
 
-namespace testcpp {
+namespace testcpplite {
 struct TestResult;
 
 struct Test {

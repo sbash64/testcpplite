@@ -1,2 +1,2 @@
-add_library(testcpp testcpp.cpp)
-target_include_directories(testcpp PRIVATE include/testcpp PUBLIC include)
+add_library(testcpplite testcpplite.cpp)
+target_include_directories(testcpplite PRIVATE include/testcpplite PUBLIC include)

@@ -1,8 +1,8 @@
-#include <testcpp/testcpp.hpp>
+#include <testcpplite/testcpplite.hpp>
 #include <sstream>
 #include <iostream>
 
-namespace testcpp {
+namespace testcpplite {
 namespace {
 void passes(TestResult &result) { assertEqual(result, "a", "a"); }
 
@@ -30,7 +30,7 @@ auto test(const std::vector<Test> &tests) -> std::stringstream {
 
 void assertEqual(
     TestResult &result, const std::string &s, const std::stringstream &stream) {
-    testcpp::assertEqual(result, s, stream.str());
+    testcpplite::assertEqual(result, s, stream.str());
 }
 
 void assertEqual(
@@ -116,7 +116,7 @@ void failedNegativeBooleanAssertionShowsFailedMessage(TestResult &result) {
 }
 
 void main() {
-    testcpp::test(
+    testcpplite::test(
         {{passedOnlyTestShowsPassedMessage, "passedOnlyTestShowsPassedMessage"},
             {failedOnlyTestShowsFailedMessage,
                 "failedOnlyTestShowsFailedMessage"},
@@ -143,4 +143,4 @@ void main() {
 }
 }
 
-int main() { testcpp::main(); }
+int main() { testcpplite::main(); }

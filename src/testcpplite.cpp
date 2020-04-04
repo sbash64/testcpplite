@@ -1,6 +1,6 @@
-#include "testcpp.hpp"
+#include "testcpplite.hpp"
 
-namespace testcpp {
+namespace testcpplite {
 struct TestResult {
     std::string expected;
     std::string actual;
