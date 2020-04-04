@@ -30,7 +30,7 @@ auto testStream(const std::vector<Test> &tests) -> std::stringstream {
     return stream;
 }
 
-auto test(const std::vector<Test> &tests) -> bool {
+auto test(const std::vector<Test> &tests) -> int {
     std::stringstream stream;
     return test(tests, stream);
 }
@@ -70,12 +70,12 @@ void passedOnlyTestShowsPassedMessage(TestResult &result) {
     assertEqual(result, passMessage(), {passes, "myTest"});
 }
 
-void passedReturnsTrue(TestResult &result) {
-    assertTrue(result, test({{passes, "myTest"}}));
+void passedReturnsZero(TestResult &result) {
+    assertEqual(result, 0, test({{passes, "myTest"}}));
 }
 
-void failedReturnsFalse(TestResult &result) {
-    assertFalse(result, test({{fails, "myTest"}}));
+void failedReturnsOne(TestResult &result) {
+    assertEqual(result, 1, test({{fails, "myTest"}}));
 }
 
 void failedOnlyTestShowsFailedMessage(TestResult &result) {
@@ -133,8 +133,8 @@ void failedNegativeBooleanAssertionShowsFailedMessage(TestResult &result) {
 void main() {
     testcpplite::test(
         {{passedOnlyTestShowsPassedMessage, "passedOnlyTestShowsPassedMessage"},
-            {passedReturnsTrue, "passedReturnsTrue"},
-            {failedReturnsFalse, "failedReturnsFalse"},
+            {passedReturnsZero, "passedReturnsTrue"},
+            {failedReturnsOne, "failedReturnsFalse"},
             {failedOnlyTestShowsFailedMessage,
                 "failedOnlyTestShowsFailedMessage"},
             {failedOneOfTwoTestsShowsFailedMessage,

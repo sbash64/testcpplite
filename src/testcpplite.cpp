@@ -22,7 +22,7 @@ static auto quoted(const std::string &s) -> std::string {
     return mark + s + mark;
 }
 
-auto test(const std::vector<Test> &tests, std::ostream &stream) -> bool {
+auto test(const std::vector<Test> &tests, std::ostream &stream) -> int {
     bool passed{true};
     for (const auto &test : tests) {
         TestResult result{};
@@ -36,7 +36,7 @@ auto test(const std::vector<Test> &tests, std::ostream &stream) -> bool {
     }
     if (passed)
         stream << "pass\n";
-    return passed;
+    return passed ? 0 : 1;
 }
 
 void assertEqual(TestResult &result, const std::string &expected,

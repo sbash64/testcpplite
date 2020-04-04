@@ -14,7 +14,7 @@ struct Test {
     std::string name;
 };
 
-auto test(const std::vector<Test> &tests, std::ostream &) -> bool;
+auto test(const std::vector<Test> &tests, std::ostream &) -> int;
 void assertEqual(
     TestResult &, const std::string &expected, const std::string &actual);
 void assertEqual(TestResult &, int expected, int actual);
