@@ -7,7 +7,19 @@ struct TestResult {
     bool failed;
 };
 
+static void setExpected(TestResult &result, std::string s) {
+    result.expected = std::move(s);
+}
+
+static void setActual(TestResult &result, std::string s) {
+    result.actual = std::move(s);
+}
+
 static void fail(TestResult &result) { result.failed = true; }
+
+static auto quoted(const std::string &s) -> std::string {
+    return '"' + s + '"';
+}
 
 void test(const std::vector<Test> &tests, std::ostream &stream) {
     bool passed{true};
@@ -28,32 +40,32 @@ void test(const std::vector<Test> &tests, std::ostream &stream) {
 void assertEqual(TestResult &result, const std::string &expected,
     const std::string &actual) {
     if (expected != actual) {
-        result.expected = '"' + expected + '"';
-        result.actual = '"' + actual + '"';
+        setExpected(result, quoted(expected));
+        setActual(result, quoted(actual));
         fail(result);
     }
 }
 
 void assertEqual(TestResult &result, int expected, int actual) {
     if (expected != actual) {
-        result.expected = std::to_string(expected);
-        result.actual = std::to_string(actual);
+        setExpected(result, std::to_string(expected));
+        setActual(result, std::to_string(actual));
         fail(result);
     }
 }
 
 void assertTrue(TestResult &result, bool c) {
     if (!c) {
-        result.expected = "true";
-        result.actual = "false";
+        setExpected(result, "true");
+        setActual(result, "false");
         fail(result);
     }
 }
 
 void assertFalse(TestResult &result, bool c) {
     if (c) {
-        result.expected = "false";
-        result.actual = "true";
+        setExpected(result, "false");
+        setActual(result, "true");
         fail(result);
     }
 }
