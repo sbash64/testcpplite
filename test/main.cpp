@@ -6,7 +6,7 @@ namespace testcpp {
 namespace {
 void passes(TestResult &result) { assertEqual(result, "a", "a"); }
 
-void fails(TestResult &result) { assertEqual(result, "a", "b"); }
+void expectsAActualB(TestResult &result) { assertEqual(result, "a", "b"); }
 
 void passesIntegerComparison(TestResult &result) { assertEqual(result, 1, 1); }
 
@@ -44,30 +44,34 @@ void assertEqual(TestResult &result, const std::string &s, const Test &t) {
     assertEqual(result, s, test({t}));
 }
 
+auto expectsAActualBMessage() -> std::string {
+    return "    expected \"a\", actual \"b\"\n";
+};
+
 void passedOnlyTestShowsPassedMessage(TestResult &result) {
     assertEqual(result, "pass\n", {passes, "passes"});
 }
 
 void failedOnlyTestShowsFailedMessage(TestResult &result) {
-    assertEqual(result, "fail fails\n    expected \"a\", actual \"b\"\n",
-        {fails, "fails"});
+    assertEqual(result, "fail fails\n" + expectsAActualBMessage(),
+        {expectsAActualB, "fails"});
 }
 
 void failedOneOfTwoTestsShowsFailedMessage(TestResult &result) {
-    assertEqual(result, "fail fails\n    expected \"a\", actual \"b\"\n",
-        {{passes, "passes"}, {fails, "fails"}});
+    assertEqual(result, "fail fails\n" + expectsAActualBMessage(),
+        {{passes, "passes"}, {expectsAActualB, "fails"}});
 }
 
 void failsBothTestsShowsFailedMessage(TestResult &result) {
     assertEqual(result,
         "fail fail1\n    expected \"a\", actual \"b\"\nfail fail2\n    "
         "expected \"a\", actual \"b\"\n",
-        {{fails, "fail1"}, {fails, "fail2"}});
+        {{expectsAActualB, "fail1"}, {expectsAActualB, "fail2"}});
 }
 
 void passesLastTestButFailsFirstShowsFailedMessage(TestResult &result) {
-    assertEqual(result, "fail fails\n    expected \"a\", actual \"b\"\n",
-        {{fails, "fails"}, {passes, "passes"}});
+    assertEqual(result, "fail fails\n" + expectsAActualBMessage(),
+        {{expectsAActualB, "fails"}, {passes, "passes"}});
 }
 
 void passedIntegerComparisonShowsPassedMessage(TestResult &result) {
