@@ -18,7 +18,8 @@ static void setActual(TestResult &result, std::string s) {
 static void fail(TestResult &result) { result.failed = true; }
 
 static auto quoted(const std::string &s) -> std::string {
-    return '"' + s + '"';
+    constexpr auto mark{'"'};
+    return mark + s + mark;
 }
 
 void test(const std::vector<Test> &tests, std::ostream &stream) {
@@ -28,9 +29,9 @@ void test(const std::vector<Test> &tests, std::ostream &stream) {
         test.f(result);
         if (result.failed) {
             passed = false;
-            stream << "fail " << test.name.c_str() << '\n';
+            stream << "fail " << test.name << '\n';
             stream << "    expected " << result.expected << ", actual "
-                   << result.actual << "\n";
+                   << result.actual << '\n';
         }
     }
     if (passed)
