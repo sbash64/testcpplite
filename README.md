@@ -1,7 +1,7 @@
 # TestCppLite
 
 ## Purpose
-* provide a simple, lightweight testing library for C++ without inheritance or macros
+provide a simple, lightweight testing library for C++ without inheritance or macros
 
 ## Build
 ```bash
@@ -26,7 +26,7 @@ static void fails(testcpplite::TestResult &result) {
 
 int main() {
     return testcpplite::test(
-        {{passes, "myTest"}, {fails, "myFailingTest"}},
+        {{passes, "thisTestWillPass"}, {fails, "thisTestWillFail"}},
         std::cout
     );
 }
@@ -34,6 +34,6 @@ int main() {
 
 ```bash
 $ ./a.out
-fail myFailingTest
+fail thisTestWillFail
      expected "a", actual "b"
 ```
