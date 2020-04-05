@@ -1,0 +1,21 @@
+name: cmake build & test
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: generate build system
+      run: cmake -S . -B build -DWITH_TESTS=1 -DCMAKE_BUILD_TYPE=Release
+    - name: build
+      run: cmake --build build
+    - name: test
+      run: build/tests/test
