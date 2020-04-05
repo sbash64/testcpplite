@@ -12,6 +12,10 @@ void fails(TestResult &result) { expectsAActualB(result); }
 
 void passesIntegerComparison(TestResult &result) { assertEqual(result, 1, 1); }
 
+void expects2147483647Actual2147483648(TestResult &result) {
+    assertEqual(result, 2147483647UL, 2147483648UL);
+}
+
 void expectsOneActualZero(TestResult &result) { assertEqual(result, 1, 0); }
 
 void passesBooleanAssertion(TestResult &result) { assertTrue(result, true); }
@@ -130,6 +134,12 @@ void failedNegativeBooleanAssertionShowsFailedMessage(TestResult &result) {
         {expectsFalseActualTrue, "myTest"});
 }
 
+void failedUnsignedIntegerComparisonShowsFailedMessage(TestResult &result) {
+    assertEqual(result,
+        failMessage("myTest") + expectationMessage("2147483647", "2147483648"),
+        {expects2147483647Actual2147483648, "myTest"});
+}
+
 int main() {
     return testcpplite::test(
         {{passedOnlyTestShowsPassedMessage, "passedOnlyTestShowsPassedMessage"},
@@ -154,7 +164,9 @@ int main() {
             {passedNegativeBooleanAssertionShowsPassedMessage,
                 "passedNegativeBooleanAssertionShowsPassedMessage"},
             {failedNegativeBooleanAssertionShowsFailedMessage,
-                "failedNegativeBooleanAssertionShowsFailedMessage"}},
+                "failedNegativeBooleanAssertionShowsFailedMessage"},
+            {failedUnsignedIntegerComparisonShowsFailedMessage,
+                "failedUnsignedIntegerComparisonShowsFailedMessage"}},
         std::cout);
 }
 }

@@ -56,6 +56,15 @@ void assertEqual(TestResult &result, int expected, int actual) {
     }
 }
 
+void assertEqual(
+    TestResult &result, unsigned long expected, unsigned long actual) {
+    if (expected != actual) {
+        setExpected(result, std::to_string(expected));
+        setActual(result, std::to_string(actual));
+        fail(result);
+    }
+}
+
 void assertTrue(TestResult &result, bool c) {
     if (!c) {
         setExpected(result, "true");
