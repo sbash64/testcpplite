@@ -7,13 +7,17 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
-
+  build-and-test:
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        compiler: [g++, clang++]
+        os: [ubuntu-latest, macOS-latest]
     steps:
     - uses: actions/checkout@v2
     - name: generate build system
+      env:
+        CXX: ${{ matrix.compiler }}
       run: cmake -S . -B build -DWITH_TESTS=1 -DCMAKE_BUILD_TYPE=Release
     - name: build
       run: cmake --build build
