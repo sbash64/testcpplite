@@ -1,4 +1,5 @@
 #include "testcpplite.hpp"
+#include <exception>
 
 namespace testcpplite {
 struct TestResult {
@@ -26,12 +27,18 @@ auto test(const std::vector<Test> &tests, std::ostream &stream) -> int {
     bool passed{true};
     for (const auto &test : tests) {
         TestResult result{};
-        test.f(result);
-        if (result.failed) {
+        try {
+            test.f(result);
+            if (result.failed) {
+                passed = false;
+                stream << "fail " << test.name << '\n';
+                stream << "    expected " << result.expected << ", actual "
+                       << result.actual << '\n';
+            }
+        } catch (const std::exception &e) {
             passed = false;
             stream << "fail " << test.name << '\n';
-            stream << "    expected " << result.expected << ", actual "
-                   << result.actual << '\n';
+            stream << "    " << e.what() << '\n';
         }
     }
     if (passed)
