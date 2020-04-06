@@ -23,6 +23,12 @@ static auto quoted(const std::string &s) -> std::string {
     return mark + s + mark;
 }
 
+void writeFailure(
+    std::ostream &stream, const Test &test, const std::string &what) {
+    stream << "fail " << test.name << '\n';
+    stream << "    " << what << '\n';
+}
+
 auto test(const std::vector<Test> &tests, std::ostream &stream) -> int {
     bool passed{true};
     for (const auto &test : tests) {
@@ -31,14 +37,13 @@ auto test(const std::vector<Test> &tests, std::ostream &stream) -> int {
             test.f(result);
             if (result.failed) {
                 passed = false;
-                stream << "fail " << test.name << '\n';
-                stream << "    expected " << result.expected << ", actual "
-                       << result.actual << '\n';
+                writeFailure(stream, test,
+                    "expected " + result.expected + ", actual " +
+                        result.actual);
             }
         } catch (const std::exception &e) {
             passed = false;
-            stream << "fail " << test.name << '\n';
-            stream << "    " << e.what() << '\n';
+            writeFailure(stream, test, e.what());
         }
     }
     if (passed)
