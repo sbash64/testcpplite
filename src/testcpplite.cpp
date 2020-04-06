@@ -23,7 +23,7 @@ static auto quoted(const std::string &s) -> std::string {
     return mark + s + mark;
 }
 
-void writeFailure(
+static void writeFailure(
     std::ostream &stream, const Test &test, const std::string &what) {
     stream << "fail " << test.name << '\n';
     stream << "    " << what << '\n';
@@ -32,8 +32,8 @@ void writeFailure(
 auto test(const std::vector<Test> &tests, std::ostream &stream) -> int {
     bool passed{true};
     for (const auto &test : tests) {
-        TestResult result{};
         try {
+            TestResult result{};
             test.f(result);
             if (result.failed) {
                 passed = false;
