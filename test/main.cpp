@@ -1,6 +1,8 @@
 #include <testcpplite/testcpplite.hpp>
 #include <sstream>
 #include <iostream>
+#include <exception>
+#include <string>
 
 namespace testcpplite {
 namespace {
@@ -27,6 +29,16 @@ void passesNegativeBooleanAssertion(TestResult &result) {
 }
 
 void expectsFalseActualTrue(TestResult &result) { assertFalse(result, true); }
+
+class StandardException : public std::exception {
+  public:
+    explicit StandardException(std::string s) : s{std::move(s)} {}
+
+    auto what() const noexcept -> const char * override { return s.c_str(); }
+
+  private:
+    std::string s;
+};
 
 auto testStream(const std::vector<Test> &tests) -> std::stringstream {
     std::stringstream stream;
@@ -140,6 +152,11 @@ void failedUnsignedIntegerComparisonShowsFailedMessage(TestResult &result) {
         {expects2147483647Actual2147483648, "myTest"});
 }
 
+void catchesStandardExceptions(TestResult &result) {
+    assertEqual(result, failMessage("myTest") + "    error\n",
+        {[](TestResult &) { throw StandardException{"error"}; }, "myTest"});
+}
+
 int main() {
     return testcpplite::test(
         {{passedOnlyTestShowsPassedMessage, "passedOnlyTestShowsPassedMessage"},
@@ -166,7 +183,8 @@ int main() {
             {failedNegativeBooleanAssertionShowsFailedMessage,
                 "failedNegativeBooleanAssertionShowsFailedMessage"},
             {failedUnsignedIntegerComparisonShowsFailedMessage,
-                "failedUnsignedIntegerComparisonShowsFailedMessage"}},
+                "failedUnsignedIntegerComparisonShowsFailedMessage"},
+            {catchesStandardExceptions, "catchesStandardExceptions"}},
         std::cout);
 }
 }

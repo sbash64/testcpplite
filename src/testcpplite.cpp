@@ -1,4 +1,5 @@
 #include "testcpplite.hpp"
+#include <exception>
 
 namespace testcpplite {
 struct TestResult {
@@ -22,18 +23,33 @@ static auto quoted(const std::string &s) -> std::string {
     return mark + s + mark;
 }
 
-auto test(const std::vector<Test> &tests, std::ostream &stream) -> int {
+static void writeFailure(
+    std::ostream &stream, const Test &test, const std::string &what) {
+    stream << "fail " << test.name << '\n';
+    stream << "    " << what << '\n';
+}
+
+static auto test(const Test &test, std::ostream &stream) -> bool {
     bool passed{true};
-    for (const auto &test : tests) {
+    try {
         TestResult result{};
         test.f(result);
         if (result.failed) {
             passed = false;
-            stream << "fail " << test.name << '\n';
-            stream << "    expected " << result.expected << ", actual "
-                   << result.actual << '\n';
+            writeFailure(stream, test,
+                "expected " + result.expected + ", actual " + result.actual);
         }
+    } catch (const std::exception &e) {
+        passed = false;
+        writeFailure(stream, test, e.what());
     }
+    return passed;
+}
+
+auto test(const std::vector<Test> &tests, std::ostream &stream) -> int {
+    bool passed{true};
+    for (const auto &t : tests)
+        passed &= test(t, stream);
     if (passed)
         stream << "pass\n";
     return passed ? 0 : 1;
