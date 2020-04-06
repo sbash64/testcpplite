@@ -29,23 +29,27 @@ static void writeFailure(
     stream << "    " << what << '\n';
 }
 
+static auto test(const Test &test, std::ostream &stream) -> bool {
+    bool passed{true};
+    try {
+        TestResult result{};
+        test.f(result);
+        if (result.failed) {
+            passed = false;
+            writeFailure(stream, test,
+                "expected " + result.expected + ", actual " + result.actual);
+        }
+    } catch (const std::exception &e) {
+        passed = false;
+        writeFailure(stream, test, e.what());
+    }
+    return passed;
+}
+
 auto test(const std::vector<Test> &tests, std::ostream &stream) -> int {
     bool passed{true};
-    for (const auto &test : tests) {
-        try {
-            TestResult result{};
-            test.f(result);
-            if (result.failed) {
-                passed = false;
-                writeFailure(stream, test,
-                    "expected " + result.expected + ", actual " +
-                        result.actual);
-            }
-        } catch (const std::exception &e) {
-            passed = false;
-            writeFailure(stream, test, e.what());
-        }
-    }
+    for (const auto &t : tests)
+        passed &= test(t, stream);
     if (passed)
         stream << "pass\n";
     return passed ? 0 : 1;
