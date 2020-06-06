@@ -17,11 +17,11 @@ $ cmake --build . --target testcpplite
 #include <iostream>
 
 static void passes(testcpplite::TestResult &result) {
-    testcpplite::assertEqual(result, 1, 1);
+    assertEqual(result, 1, 1);
 }
 
 static void fails(testcpplite::TestResult &result) {
-    testcpplite::assertEqual(result, "a", "b");
+    assertEqual(result, "a", "b");
 }
 
 int main() {
