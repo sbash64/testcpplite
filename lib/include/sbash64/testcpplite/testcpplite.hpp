@@ -1,11 +1,12 @@
-#ifndef TESTCPPLITE_SRC_INCLUDE_TESTCPPLITE_TESTCPPLITE_HPP_
-#define TESTCPPLITE_SRC_INCLUDE_TESTCPPLITE_TESTCPPLITE_HPP_
+#ifndef SBASH64_TESTCPPLITE_LIB_INCLUDE_SBASH64_TESTCPPLITE_TESTCPPLITE_HPP_
+#define SBASH64_TESTCPPLITE_LIB_INCLUDE_SBASH64_TESTCPPLITE_TESTCPPLITE_HPP_
 
 #include <string>
 #include <vector>
 #include <functional>
 #include <ostream>
 
+namespace sbash64 {
 namespace testcpplite {
 struct TestResult;
 
@@ -21,6 +22,7 @@ void assertEqual(TestResult &, int expected, int actual);
 void assertEqual(TestResult &, unsigned long expected, unsigned long actual);
 void assertTrue(TestResult &, bool);
 void assertFalse(TestResult &, bool);
+}
 }
 
 #endif

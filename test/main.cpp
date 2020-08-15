@@ -1,9 +1,10 @@
-#include <testcpplite/testcpplite.hpp>
+#include <sbash64/testcpplite/testcpplite.hpp>
 #include <sstream>
 #include <iostream>
 #include <exception>
 #include <string>
 
+namespace sbash64 {
 namespace testcpplite {
 namespace {
 void passes(TestResult &result) { assertEqual(result, "a", "a"); }
@@ -189,5 +190,6 @@ int main() {
 }
 }
 }
+}
 
-int main() { return testcpplite::main(); }
+int main() { return sbash64::testcpplite::main(); }
