@@ -3,7 +3,7 @@ project(
   TestCppLite
   VERSION 1.1.3
   LANGUAGES CXX)
-add_subdirectory(src)
+add_subdirectory(lib)
 
 option(SBASH64_TESTCPPLITE_ENABLE_TESTS "Enable tests" OFF)
 if(${SBASH64_TESTCPPLITE_ENABLE_TESTS})

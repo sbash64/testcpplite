@@ -8,7 +8,7 @@ provide a simple, lightweight testing library for C++ without inheritance or mac
 $ mkdir build
 $ cd build
 $ cmake ..
-$ cmake --build . --target testcpplite
+$ cmake --build . --target sbash64-testcpplite
 ```
 
 ## Use
