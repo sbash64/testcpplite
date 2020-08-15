@@ -1,6 +1,7 @@
 #include "testcpplite.hpp"
 #include <exception>
 
+namespace sbash64 {
 namespace testcpplite {
 struct TestResult {
     std::string expected;
@@ -95,5 +96,6 @@ void assertFalse(TestResult &result, bool c) {
         setActual(result, "true");
         fail(result);
     }
+}
 }
 }

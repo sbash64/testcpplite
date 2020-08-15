@@ -13,19 +13,23 @@ $ cmake --build . --target sbash64-testcpplite
 
 ## Use
 ```c++
-#include <testcpplite/testcpplite.hpp>
+#include <sbash64/testcpplite/testcpplite.hpp>
 #include <iostream>
 
-static void passes(testcpplite::TestResult &result) {
-    testcpplite::assertEqual(result, 1, 1);
+namespace sbash64 {
+namespace testcpplite {
+static void passes(TestResult &result) {
+    assertEqual(result, 1, 1);
 }
 
-static void fails(testcpplite::TestResult &result) {
-    testcpplite::assertEqual(result, "a", "b");
+static void fails(TestResult &result) {
+    assertEqual(result, "a", "b");
+}
+}
 }
 
 int main() {
-    return testcpplite::test(
+    return sbash64::testcpplite::test(
         {{passes, "thisTestWillPass"}, {fails, "thisTestWillFail"}},
         std::cout
     );

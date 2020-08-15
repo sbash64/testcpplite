@@ -1,7 +1,7 @@
 add_library(sbash64-testcpplite testcpplite.cpp)
 target_include_directories(
   sbash64-testcpplite
-  PRIVATE include/testcpplite
+  PRIVATE include/sbash64/testcpplite
   PUBLIC include)
 target_compile_features(sbash64-testcpplite PUBLIC cxx_std_11)
 target_compile_options(sbash64-testcpplite

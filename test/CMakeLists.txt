@@ -1,5 +1,5 @@
 add_executable(sbash64-testcpplite-tests main.cpp)
-target_link_libraries(sbash64-testcpplite-tests testcpplite)
+target_link_libraries(sbash64-testcpplite-tests sbash64-testcpplite)
 target_compile_options(sbash64-testcpplite-tests
                        PRIVATE ${SBASH64_TESTCPPLITE_WARNINGS})
 set_target_properties(sbash64-testcpplite-tests PROPERTIES CXX_EXTENSIONS OFF)
