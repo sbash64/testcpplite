@@ -20,6 +20,8 @@ void assertEqual(
     TestResult &, const std::string &expected, const std::string &actual);
 void assertEqual(TestResult &, int expected, int actual);
 void assertEqual(TestResult &, unsigned long expected, unsigned long actual);
+void assertEqual(
+    TestResult &, unsigned long long expected, unsigned long long actual);
 void assertTrue(TestResult &, bool);
 void assertFalse(TestResult &, bool);
 }
