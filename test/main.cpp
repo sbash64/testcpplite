@@ -147,15 +147,17 @@ void failedIntegerComparisonShowsFailedMessage(TestResult &result) {
 void failedIntegerPointerComparisonShowsFailedMessage(TestResult &result) {
     const int a{0};
     const int b{0};
+    const auto *const pa{&a};
+    const auto *const pb{&b};
     std::stringstream expected;
-    expected << &a;
+    expected << pa;
     std::stringstream actual;
-    actual << &b;
+    actual << pb;
     assertEqual(result,
         failMessage("myTest") +
             expectationMessage(expected.str(), actual.str()),
-        {[&](testcpplite::TestResult &subresult) {
-             assertEqual(subresult, &a, &b);
+        {[=](testcpplite::TestResult &subresult) {
+             assertEqual(subresult, pa, pb);
          },
             "myTest"});
 }
