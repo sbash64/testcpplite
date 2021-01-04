@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10.0)
 project(
   TestCppLite
-  VERSION 2.0.1
+  VERSION 2.1.0
   LANGUAGES CXX)
 add_subdirectory(lib)
 
