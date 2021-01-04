@@ -7,9 +7,13 @@
 namespace sbash64 {
 namespace testcpplite {
 namespace {
-void passes(TestResult &result) { assertEqual(result, "a", "a"); }
+void passes(TestResult &result) {
+    assertEqual(result, std::string{"a"}, std::string{"a"});
+}
 
-void expectsAActualB(TestResult &result) { assertEqual(result, "a", "b"); }
+void expectsAActualB(TestResult &result) {
+    assertEqual(result, std::string{"a"}, std::string{"b"});
+}
 
 void fails(TestResult &result) { expectsAActualB(result); }
 
