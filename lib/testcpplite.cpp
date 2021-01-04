@@ -1,5 +1,6 @@
 #include "testcpplite.hpp"
 #include <exception>
+#include <sstream>
 
 namespace sbash64 {
 namespace testcpplite {
@@ -103,6 +104,18 @@ void assertFalse(TestResult &result, bool c) {
     if (c) {
         setExpected(result, "false");
         setActual(result, "true");
+        fail(result);
+    }
+}
+
+void assertEqual(TestResult &result, void *expected, void *actual) {
+    if (expected != actual) {
+        std::stringstream expectedStream;
+        expectedStream << expected;
+        std::stringstream actualStream;
+        actualStream << actual;
+        setExpected(result, expectedStream.str());
+        setActual(result, actualStream.str());
         fail(result);
     }
 }
