@@ -15,6 +15,11 @@ void fails(TestResult &result) { expectsAActualB(result); }
 
 void passesIntegerComparison(TestResult &result) { assertEqual(result, 1, 1); }
 
+void passesIntegerPointerComparison(TestResult &result) {
+    int b{0};
+    assertEqual(result, &b, &b);
+}
+
 void expects2147483647Actual2147483648(TestResult &result) {
     assertEqual(result, 2147483647UL, 2147483648UL);
 }
@@ -125,6 +130,11 @@ void passedIntegerComparisonShowsPassedMessage(TestResult &result) {
     assertEqual(result, passMessage(), {passesIntegerComparison, "myTest"});
 }
 
+void passedIntegerPointerComparisonShowsPassedMessage(TestResult &result) {
+    assertEqual(
+        result, passMessage(), {passesIntegerPointerComparison, "myTest"});
+}
+
 void failedIntegerComparisonShowsFailedMessage(TestResult &result) {
     assertEqual(result, failMessage("myTest") + expectationMessage("1", "0"),
         {expectsOneActualZero, "myTest"});
@@ -185,6 +195,8 @@ int main() {
                 "passesLastTestButFailsFirstShowsFailedMessage"},
             {passedIntegerComparisonShowsPassedMessage,
                 "passedIntegerComparisonShowsPassedMessage"},
+            {passedIntegerPointerComparisonShowsPassedMessage,
+                "passedIntegerPointerComparisonShowsPassedMessage"},
             {failedIntegerComparisonShowsFailedMessage,
                 "failedIntegerComparisonShowsFailedMessage"},
             {passedBooleanAssertionShowsPassedMessage,

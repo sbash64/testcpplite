@@ -106,5 +106,16 @@ void assertFalse(TestResult &result, bool c) {
         fail(result);
     }
 }
+
+void assertEqual(TestResult &result, void *expected, void *actual) {
+    if (expected != actual) {
+        char buffer[64];
+        std::snprintf(buffer, sizeof buffer, "%p", expected);
+        setExpected(result, buffer);
+        std::snprintf(buffer, sizeof buffer, "%p", actual);
+        setActual(result, buffer);
+        fail(result);
+    }
+}
 }
 }
