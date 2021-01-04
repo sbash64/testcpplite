@@ -140,6 +140,22 @@ void failedIntegerComparisonShowsFailedMessage(TestResult &result) {
         {expectsOneActualZero, "myTest"});
 }
 
+void failedIntegerPointerComparisonShowsFailedMessage(TestResult &result) {
+    int a{0};
+    int b{0};
+    std::stringstream expected;
+    expected << &a;
+    std::stringstream actual;
+    actual << &b;
+    assertEqual(result,
+        failMessage("myTest") +
+            expectationMessage(expected.str(), actual.str()),
+        {[&](testcpplite::TestResult &subresult) {
+             assertEqual(subresult, &a, &b);
+         },
+            "myTest"});
+}
+
 void passedBooleanAssertionShowsPassedMessage(TestResult &result) {
     assertEqual(result, passMessage(), {passesBooleanAssertion, "myTest"});
 }
@@ -199,6 +215,8 @@ int main() {
                 "passedIntegerPointerComparisonShowsPassedMessage"},
             {failedIntegerComparisonShowsFailedMessage,
                 "failedIntegerComparisonShowsFailedMessage"},
+            {failedIntegerPointerComparisonShowsFailedMessage,
+                "failedIntegerPointerComparisonShowsFailedMessage"},
             {passedBooleanAssertionShowsPassedMessage,
                 "passedBooleanAssertionShowsPassedMessage"},
             {failedBooleanAssertionShowsFailedMessage,
