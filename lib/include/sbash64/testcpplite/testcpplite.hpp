@@ -19,7 +19,7 @@ auto test(const std::vector<Test> &tests, std::ostream &) -> int;
 void assertEqual(
     TestResult &, const std::string &expected, const std::string &actual);
 void assertEqual(TestResult &, int expected, int actual);
-void assertEqual(TestResult &, void *expected, void *actual);
+void assertEqual(TestResult &, const void *expected, const void *actual);
 void assertEqual(TestResult &, unsigned long expected, unsigned long actual);
 void assertEqual(
     TestResult &, unsigned long long expected, unsigned long long actual);

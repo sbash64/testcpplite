@@ -20,7 +20,7 @@ void fails(TestResult &result) { expectsAActualB(result); }
 void passesIntegerComparison(TestResult &result) { assertEqual(result, 1, 1); }
 
 void passesIntegerPointerComparison(TestResult &result) {
-    int b{0};
+    const int b{0};
     assertEqual(result, &b, &b);
 }
 
@@ -145,17 +145,19 @@ void failedIntegerComparisonShowsFailedMessage(TestResult &result) {
 }
 
 void failedIntegerPointerComparisonShowsFailedMessage(TestResult &result) {
-    int a{0};
-    int b{0};
+    const int a{0};
+    const int b{0};
+    const auto *const pa{&a};
+    const auto *const pb{&b};
     std::stringstream expected;
-    expected << &a;
+    expected << pa;
     std::stringstream actual;
-    actual << &b;
+    actual << pb;
     assertEqual(result,
         failMessage("myTest") +
             expectationMessage(expected.str(), actual.str()),
-        {[&](testcpplite::TestResult &subresult) {
-             assertEqual(subresult, &a, &b);
+        {[=](testcpplite::TestResult &subresult) {
+             assertEqual(subresult, pa, pb);
          },
             "myTest"});
 }
