@@ -20,7 +20,7 @@ void fails(TestResult &result) { expectsAActualB(result); }
 void passesIntegerComparison(TestResult &result) { assertEqual(result, 1, 1); }
 
 void passesIntegerPointerComparison(TestResult &result) {
-    int b{0};
+    const int b{0};
     assertEqual(result, &b, &b);
 }
 
@@ -145,8 +145,8 @@ void failedIntegerComparisonShowsFailedMessage(TestResult &result) {
 }
 
 void failedIntegerPointerComparisonShowsFailedMessage(TestResult &result) {
-    int a{0};
-    int b{0};
+    const int a{0};
+    const int b{0};
     std::stringstream expected;
     expected << &a;
     std::stringstream actual;

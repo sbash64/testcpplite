@@ -108,7 +108,7 @@ void assertFalse(TestResult &result, bool c) {
     }
 }
 
-void assertEqual(TestResult &result, void *expected, void *actual) {
+void assertEqual(TestResult &result, const void *expected, const void *actual) {
     if (expected != actual) {
         std::stringstream expectedStream;
         expectedStream << expected;
