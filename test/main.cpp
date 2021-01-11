@@ -32,6 +32,10 @@ void expects9223372036854775807Actual9223372036854775808(TestResult &result) {
     assertEqual(result, 9223372036854775807ULL, 9223372036854775808ULL);
 }
 
+void expectsNegative2147483648ActualNegative2147483649(TestResult &result) {
+    assertEqual(result, -2147483648LL, -2147483649LL);
+}
+
 void expectsOneActualZero(TestResult &result) { assertEqual(result, 1, 0); }
 
 void passesBooleanAssertion(TestResult &result) { assertTrue(result, true); }
@@ -197,6 +201,14 @@ void failedReallyLargeUnsignedIntegerComparisonShowsFailedMessage(
         {expects9223372036854775807Actual9223372036854775808, "myTest"});
 }
 
+void failedReallyLargeSignedIntegerComparisonShowsFailedMessage(
+    TestResult &result) {
+    assertEqual(result,
+        failMessage("myTest") +
+            expectationMessage("-2147483648", "-2147483649"),
+        {expectsNegative2147483648ActualNegative2147483649, "myTest"});
+}
+
 void catchesStandardExceptions(TestResult &result) {
     assertEqual(result, failMessage("myTest") + "    error\n",
         {[](TestResult &) { throw StandardException{"error"}; }, "myTest"});
@@ -235,6 +247,8 @@ int main() {
                 "failedUnsignedIntegerComparisonShowsFailedMessage"},
             {failedReallyLargeUnsignedIntegerComparisonShowsFailedMessage,
                 "failedReallyLargeUnsignedIntegerComparisonShowsFailedMessage"},
+            {failedReallyLargeSignedIntegerComparisonShowsFailedMessage,
+                "failedReallyLargeSignedIntegerComparisonShowsFailedMessage"},
             {catchesStandardExceptions, "catchesStandardExceptions"}},
         std::cout);
 }
