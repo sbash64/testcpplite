@@ -21,10 +21,10 @@ void assertEqual(
 void assertEqual(TestResult &, int expected, int actual);
 void assertEqual(TestResult &, long expected, long actual);
 void assertEqual(TestResult &, long long expected, long long actual);
-void assertEqual(TestResult &, const void *expected, const void *actual);
 void assertEqual(TestResult &, unsigned long expected, unsigned long actual);
 void assertEqual(
     TestResult &, unsigned long long expected, unsigned long long actual);
+void assertEqual(TestResult &, const void *expected, const void *actual);
 void assertTrue(TestResult &, bool);
 void assertFalse(TestResult &, bool);
 }
