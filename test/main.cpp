@@ -193,6 +193,11 @@ void failedUnsignedIntegerComparisonShowsFailedMessage(TestResult &result) {
         {expects2147483647Actual2147483648, "myTest"});
 }
 
+void failedLongComparisonShowsFailedMessage(TestResult &result) {
+    assertEqual(result, failMessage("myTest") + expectationMessage("1", "2"),
+        {[](TestResult &result) { assertEqual(result, 1L, 2L); }, "myTest"});
+}
+
 void failedReallyLargeUnsignedIntegerComparisonShowsFailedMessage(
     TestResult &result) {
     assertEqual(result,
@@ -245,6 +250,8 @@ int main() {
                 "failedNegativeBooleanAssertionShowsFailedMessage"},
             {failedUnsignedIntegerComparisonShowsFailedMessage,
                 "failedUnsignedIntegerComparisonShowsFailedMessage"},
+            {failedLongComparisonShowsFailedMessage,
+                "failedLongComparisonShowsFailedMessage"},
             {failedReallyLargeUnsignedIntegerComparisonShowsFailedMessage,
                 "failedReallyLargeUnsignedIntegerComparisonShowsFailedMessage"},
             {failedReallyLargeSignedIntegerComparisonShowsFailedMessage,
