@@ -66,38 +66,35 @@ void assertEqual(TestResult &result, const std::string &expected,
     }
 }
 
-void assertEqual(TestResult &result, int expected, int actual) {
+template <typename T>
+void assertEqual(TestResult &result, T expected, T actual) {
     if (expected != actual) {
         setExpected(result, std::to_string(expected));
         setActual(result, std::to_string(actual));
         fail(result);
     }
+}
+
+void assertEqual(TestResult &result, int expected, int actual) {
+    assertEqual<int>(result, expected, actual);
+}
+
+void assertEqual(TestResult &result, long expected, long actual) {
+    assertEqual<long>(result, expected, actual);
 }
 
 void assertEqual(
     TestResult &result, unsigned long expected, unsigned long actual) {
-    if (expected != actual) {
-        setExpected(result, std::to_string(expected));
-        setActual(result, std::to_string(actual));
-        fail(result);
-    }
+    assertEqual<unsigned long>(result, expected, actual);
 }
 
 void assertEqual(TestResult &result, unsigned long long expected,
     unsigned long long actual) {
-    if (expected != actual) {
-        setExpected(result, std::to_string(expected));
-        setActual(result, std::to_string(actual));
-        fail(result);
-    }
+    assertEqual<unsigned long long>(result, expected, actual);
 }
 
 void assertEqual(TestResult &result, long long expected, long long actual) {
-    if (expected != actual) {
-        setExpected(result, std::to_string(expected));
-        setActual(result, std::to_string(actual));
-        fail(result);
-    }
+    assertEqual<long long>(result, expected, actual);
 }
 
 void assertTrue(TestResult &result, bool c) {
