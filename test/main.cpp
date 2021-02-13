@@ -4,8 +4,7 @@
 #include <exception>
 #include <string>
 
-namespace sbash64 {
-namespace testcpplite {
+namespace sbash64::testcpplite {
 namespace {
 void passes(TestResult &result) {
     assertEqual(result, std::string{"a"}, std::string{"a"});
@@ -52,7 +51,9 @@ class StandardException : public std::exception {
   public:
     explicit StandardException(std::string s) : s{std::move(s)} {}
 
-    auto what() const noexcept -> const char * override { return s.c_str(); }
+    [[nodiscard]] auto what() const noexcept -> const char * override {
+        return s.c_str();
+    }
 
   private:
     std::string s;
@@ -195,7 +196,7 @@ void failedUnsignedIntegerComparisonShowsFailedMessage(TestResult &result) {
 
 void failedLongComparisonShowsFailedMessage(TestResult &result) {
     assertEqual(result, failMessage("myTest") + expectationMessage("1", "2"),
-        {[](TestResult &result) { assertEqual(result, 1L, 2L); }, "myTest"});
+        {[](TestResult &result_) { assertEqual(result_, 1L, 2L); }, "myTest"});
 }
 
 void failedReallyLargeUnsignedIntegerComparisonShowsFailedMessage(
@@ -258,7 +259,6 @@ int main() {
                 "failedReallyLargeSignedIntegerComparisonShowsFailedMessage"},
             {catchesStandardExceptions, "catchesStandardExceptions"}},
         std::cout);
-}
 }
 }
 }
