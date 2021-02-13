@@ -26,14 +26,18 @@ static auto quoted(std::string_view s) -> std::string {
     return stream.str();
 }
 
+static auto withNewLine(std::ostream &stream) -> std::ostream & {
+    return stream << '\n';
+}
+
 static void writeFailure(
-    std::ostream &stream, const Test &test, const std::string &what) {
-    stream << "\x1b[31mfailed\x1b[0m " << test.name << '\n';
-    stream << "    " << what << '\n';
+    std::ostream &stream, const Test &test, std::string_view what) {
+    withNewLine(withNewLine(stream << "\x1b[31mfailed\x1b[0m " << test.name)
+        << "    " << what);
 }
 
 static auto test(const Test &test, std::ostream &stream) -> bool {
-    bool passed{true};
+    auto passed{true};
     try {
         TestResult result{};
         test.f(result);
@@ -58,7 +62,7 @@ auto test(const std::vector<Test> &tests, std::ostream &stream) -> int {
         stream << " - " << tests.size() << " test";
         if (tests.size() != 1)
             stream << 's';
-        stream << '\n';
+        withNewLine(stream);
     }
     return passed ? 0 : 1;
 }
