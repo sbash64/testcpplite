@@ -99,7 +99,9 @@ auto failsExpectsAActualBMessage(const std::string &name) -> std::string {
     return failMessage(name) + expectationMessage("\"a\"", "\"b\"");
 }
 
-auto passMessage() -> std::string { return withNewLine("pass - 1 test"); }
+auto passMessage() -> std::string {
+    return withNewLine("\x1b[32mpassed\x1b[0m - 1 test");
+}
 
 void passedOnlyTestShowsPassedMessage(TestResult &result) {
     assertEqual(result, passMessage(), {passes, "myTest"});
@@ -221,7 +223,7 @@ void catchesStandardExceptions(TestResult &result) {
 }
 
 void printsPassedTestCount(TestResult &result) {
-    assertEqual(result, "pass - 3 tests\n",
+    assertEqual(result, "\x1b[32mpassed\x1b[0m - 3 tests\n",
         {{passesBooleanAssertion, "a"}, {passesBooleanAssertion, "b"},
             {passesBooleanAssertion, "c"}});
 }

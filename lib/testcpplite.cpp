@@ -54,7 +54,8 @@ auto test(const std::vector<Test> &tests, std::ostream &stream) -> int {
     for (const auto &t : tests)
         passed &= test(t, stream);
     if (passed) {
-        stream << "pass - " << tests.size() << " test";
+        stream << "\x1b[32mpassed\x1b[0m";
+        stream << " - " << tests.size() << " test";
         if (tests.size() != 1)
             stream << 's';
         stream << '\n';
