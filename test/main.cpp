@@ -114,20 +114,20 @@ static auto putFailMessage(std::ostream &stream, std::string_view name)
     return putNewLine(stream << "\x1b[31mfailed\x1b[0m " << name);
 }
 
-static auto putFailsExpectsAActualBMessage(
+static auto putExpectsAActualBFailMessage(
     std::ostream &stream, std::string_view name) -> std::ostream & {
     return putExpectationMessage(
         putFailMessage(stream, name), "\"a\"", "\"b\"");
 }
 
-static auto passMessage() -> std::string {
-    std::stringstream stream;
-    putNewLine(stream << "\x1b[32mpassed\x1b[0m - 1 test");
-    return stream.str();
+static auto putPassMessage(std::ostream &stream) -> std::ostream & {
+    return putNewLine(stream << "\x1b[32mpassed\x1b[0m - 1 test");
 }
 
 static void passedOnlyTestShowsPassedMessage(TestResult &result) {
-    assertEqual(result, passMessage(), {passes, "myTest"});
+    std::stringstream stream;
+    putPassMessage(stream);
+    assertEqual(result, stream.str(), {passes, "myTest"});
 }
 
 static void passedReturnsZero(TestResult &result) {
@@ -140,40 +140,44 @@ static void failedReturnsOne(TestResult &result) {
 
 static void failedOnlyTestShowsFailedMessage(TestResult &result) {
     std::stringstream stream;
-    putFailsExpectsAActualBMessage(stream, "myTest");
+    putExpectsAActualBFailMessage(stream, "myTest");
     assertEqual(result, stream.str(), {expectsAActualB, "myTest"});
 }
 
 static void failedOneOfTwoTestsShowsFailedMessage(TestResult &result) {
     std::stringstream stream;
-    putFailsExpectsAActualBMessage(stream, "myFailingTest");
+    putExpectsAActualBFailMessage(stream, "myFailingTest");
     assertEqual(result, stream.str(),
         {{passes, "myTest"}, {expectsAActualB, "myFailingTest"}});
 }
 
 static void failsBothTestsShowsFailedMessage(TestResult &result) {
     std::stringstream stream;
-    putFailsExpectsAActualBMessage(
-        putFailsExpectsAActualBMessage(stream, "myFirstTest"), "mySecondTest");
+    putExpectsAActualBFailMessage(
+        putExpectsAActualBFailMessage(stream, "myFirstTest"), "mySecondTest");
     assertEqual(result, stream.str(),
         {{expectsAActualB, "myFirstTest"}, {expectsAActualB, "mySecondTest"}});
 }
 
 static void passesLastTestButFailsFirstShowsFailedMessage(TestResult &result) {
     std::stringstream stream;
-    putFailsExpectsAActualBMessage(stream, "myFailingTest");
+    putExpectsAActualBFailMessage(stream, "myFailingTest");
     assertEqual(result, stream.str(),
         {{expectsAActualB, "myFailingTest"}, {passes, "myTest"}});
 }
 
 static void passedIntegerComparisonShowsPassedMessage(TestResult &result) {
-    assertEqual(result, passMessage(), {passesIntegerComparison, "myTest"});
+    std::stringstream stream;
+    putPassMessage(stream);
+    assertEqual(result, stream.str(), {passesIntegerComparison, "myTest"});
 }
 
 static void passedIntegerPointerComparisonShowsPassedMessage(
     TestResult &result) {
+    std::stringstream stream;
+    putPassMessage(stream);
     assertEqual(
-        result, passMessage(), {passesIntegerPointerComparison, "myTest"});
+        result, stream.str(), {passesIntegerPointerComparison, "myTest"});
 }
 
 static void failedIntegerComparisonShowsFailedMessage(TestResult &result) {
@@ -203,7 +207,9 @@ static void failedIntegerPointerComparisonShowsFailedMessage(
 }
 
 static void passedBooleanAssertionShowsPassedMessage(TestResult &result) {
-    assertEqual(result, passMessage(), {passesBooleanAssertion, "myTest"});
+    std::stringstream stream;
+    putPassMessage(stream);
+    assertEqual(result, stream.str(), {passesBooleanAssertion, "myTest"});
 }
 
 static void failedBooleanAssertionShowsFailedMessage(TestResult &result) {
@@ -214,8 +220,10 @@ static void failedBooleanAssertionShowsFailedMessage(TestResult &result) {
 
 static void passedNegativeBooleanAssertionShowsPassedMessage(
     TestResult &result) {
+    std::stringstream stream;
+    putPassMessage(stream);
     assertEqual(
-        result, passMessage(), {passesNegativeBooleanAssertion, "myTest"});
+        result, stream.str(), {passesNegativeBooleanAssertion, "myTest"});
 }
 
 static void failedNegativeBooleanAssertionShowsFailedMessage(
