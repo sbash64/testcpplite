@@ -174,8 +174,9 @@ static void passedIntegerPointerComparisonShowsPassedMessage(
 }
 
 static void failedIntegerComparisonShowsFailedMessage(TestResult &result) {
-    assertEqual(result, failMessage("myTest") + expectationMessage("1", "0"),
-        {expectsOneActualZero, "myTest"});
+    std::stringstream stream;
+    stream << failMessage("myTest") << expectationMessage("1", "0");
+    assertEqual(result, stream.str(), {expectsOneActualZero, "myTest"});
 }
 
 static void failedIntegerPointerComparisonShowsFailedMessage(
@@ -188,9 +189,10 @@ static void failedIntegerPointerComparisonShowsFailedMessage(
     expected << pa;
     std::stringstream actual;
     actual << pb;
-    assertEqual(result,
-        failMessage("myTest") +
-            expectationMessage(expected.str(), actual.str()),
+    std::stringstream stream;
+    stream << failMessage("myTest")
+           << expectationMessage(expected.str(), actual.str());
+    assertEqual(result, stream.str(),
         {[=](testcpplite::TestResult &subresult) {
              assertEqual(subresult, pa, pb);
          },
