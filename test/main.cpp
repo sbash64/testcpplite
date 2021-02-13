@@ -93,8 +93,14 @@ static void assertEqual(
     assertEqual(result, s, testStream(tests));
 }
 
-static void assertEqual(TestResult &result, std::string_view s, const Test &t) {
-    assertEqual(result, s, testStream({t}));
+static void assertEqual(TestResult &result, const std::stringstream &stream,
+    const std::vector<Test> &tests) {
+    assertEqual(result, stream.str(), testStream(tests));
+}
+
+static void assertEqual(
+    TestResult &result, const std::stringstream &stream, const Test &t) {
+    assertEqual(result, stream.str(), testStream({t}));
 }
 
 static auto putNewLine(std::ostream &stream) -> std::ostream & {
@@ -127,7 +133,7 @@ static auto putPassMessage(std::ostream &stream) -> std::ostream & {
 static void passedOnlyTestShowsPassedMessage(TestResult &result) {
     std::stringstream stream;
     putPassMessage(stream);
-    assertEqual(result, stream.str(), {passes, "myTest"});
+    assertEqual(result, stream, {passes, "myTest"});
 }
 
 static void passedReturnsZero(TestResult &result) {
@@ -141,13 +147,13 @@ static void failedReturnsOne(TestResult &result) {
 static void failedOnlyTestShowsFailedMessage(TestResult &result) {
     std::stringstream stream;
     putExpectsAActualBFailMessage(stream, "myTest");
-    assertEqual(result, stream.str(), {expectsAActualB, "myTest"});
+    assertEqual(result, stream, {expectsAActualB, "myTest"});
 }
 
 static void failedOneOfTwoTestsShowsFailedMessage(TestResult &result) {
     std::stringstream stream;
     putExpectsAActualBFailMessage(stream, "myFailingTest");
-    assertEqual(result, stream.str(),
+    assertEqual(result, stream,
         {{passes, "myTest"}, {expectsAActualB, "myFailingTest"}});
 }
 
@@ -155,35 +161,34 @@ static void failsBothTestsShowsFailedMessage(TestResult &result) {
     std::stringstream stream;
     putExpectsAActualBFailMessage(
         putExpectsAActualBFailMessage(stream, "myFirstTest"), "mySecondTest");
-    assertEqual(result, stream.str(),
+    assertEqual(result, stream,
         {{expectsAActualB, "myFirstTest"}, {expectsAActualB, "mySecondTest"}});
 }
 
 static void passesLastTestButFailsFirstShowsFailedMessage(TestResult &result) {
     std::stringstream stream;
     putExpectsAActualBFailMessage(stream, "myFailingTest");
-    assertEqual(result, stream.str(),
+    assertEqual(result, stream,
         {{expectsAActualB, "myFailingTest"}, {passes, "myTest"}});
 }
 
 static void passedIntegerComparisonShowsPassedMessage(TestResult &result) {
     std::stringstream stream;
     putPassMessage(stream);
-    assertEqual(result, stream.str(), {passesIntegerComparison, "myTest"});
+    assertEqual(result, stream, {passesIntegerComparison, "myTest"});
 }
 
 static void passedIntegerPointerComparisonShowsPassedMessage(
     TestResult &result) {
     std::stringstream stream;
     putPassMessage(stream);
-    assertEqual(
-        result, stream.str(), {passesIntegerPointerComparison, "myTest"});
+    assertEqual(result, stream, {passesIntegerPointerComparison, "myTest"});
 }
 
 static void failedIntegerComparisonShowsFailedMessage(TestResult &result) {
     std::stringstream stream;
     putExpectationMessage(putFailMessage(stream, "myTest"), "1", "0");
-    assertEqual(result, stream.str(), {expectsOneActualZero, "myTest"});
+    assertEqual(result, stream, {expectsOneActualZero, "myTest"});
 }
 
 static void failedIntegerPointerComparisonShowsFailedMessage(
@@ -199,7 +204,7 @@ static void failedIntegerPointerComparisonShowsFailedMessage(
     std::stringstream stream;
     putExpectationMessage(
         putFailMessage(stream, "myTest"), expected.str(), actual.str());
-    assertEqual(result, stream.str(),
+    assertEqual(result, stream,
         {[=](testcpplite::TestResult &subresult) {
              assertEqual(subresult, pa, pb);
          },
@@ -209,28 +214,27 @@ static void failedIntegerPointerComparisonShowsFailedMessage(
 static void passedBooleanAssertionShowsPassedMessage(TestResult &result) {
     std::stringstream stream;
     putPassMessage(stream);
-    assertEqual(result, stream.str(), {passesBooleanAssertion, "myTest"});
+    assertEqual(result, stream, {passesBooleanAssertion, "myTest"});
 }
 
 static void failedBooleanAssertionShowsFailedMessage(TestResult &result) {
     std::stringstream stream;
     putExpectationMessage(putFailMessage(stream, "myTest"), "true", "false");
-    assertEqual(result, stream.str(), {expectsTrueActualFalse, "myTest"});
+    assertEqual(result, stream, {expectsTrueActualFalse, "myTest"});
 }
 
 static void passedNegativeBooleanAssertionShowsPassedMessage(
     TestResult &result) {
     std::stringstream stream;
     putPassMessage(stream);
-    assertEqual(
-        result, stream.str(), {passesNegativeBooleanAssertion, "myTest"});
+    assertEqual(result, stream, {passesNegativeBooleanAssertion, "myTest"});
 }
 
 static void failedNegativeBooleanAssertionShowsFailedMessage(
     TestResult &result) {
     std::stringstream stream;
     putExpectationMessage(putFailMessage(stream, "myTest"), "false", "true");
-    assertEqual(result, stream.str(), {expectsFalseActualTrue, "myTest"});
+    assertEqual(result, stream, {expectsFalseActualTrue, "myTest"});
 }
 
 static void failedUnsignedIntegerComparisonShowsFailedMessage(
@@ -238,14 +242,13 @@ static void failedUnsignedIntegerComparisonShowsFailedMessage(
     std::stringstream stream;
     putExpectationMessage(
         putFailMessage(stream, "myTest"), "2147483647", "2147483648");
-    assertEqual(
-        result, stream.str(), {expects2147483647Actual2147483648, "myTest"});
+    assertEqual(result, stream, {expects2147483647Actual2147483648, "myTest"});
 }
 
 static void failedLongComparisonShowsFailedMessage(TestResult &result) {
     std::stringstream stream;
     putExpectationMessage(putFailMessage(stream, "myTest"), "1", "2");
-    assertEqual(result, stream.str(),
+    assertEqual(result, stream,
         {[](TestResult &result_) { assertEqual(result_, 1L, 2L); }, "myTest"});
 }
 
@@ -254,7 +257,7 @@ static void failedReallyLargeUnsignedIntegerComparisonShowsFailedMessage(
     std::stringstream stream;
     putExpectationMessage(putFailMessage(stream, "myTest"),
         "9223372036854775807", "9223372036854775808");
-    assertEqual(result, stream.str(),
+    assertEqual(result, stream,
         {expects9223372036854775807Actual9223372036854775808, "myTest"});
 }
 
@@ -263,14 +266,14 @@ static void failedReallyLargeSignedIntegerComparisonShowsFailedMessage(
     std::stringstream stream;
     putExpectationMessage(
         putFailMessage(stream, "myTest"), "-2147483648", "-2147483649");
-    assertEqual(result, stream.str(),
+    assertEqual(result, stream,
         {expectsNegative2147483648ActualNegative2147483649, "myTest"});
 }
 
 static void catchesStandardExceptions(TestResult &result) {
     std::stringstream stream;
     putNewLine(putFailMessage(stream, "myTest") << "error");
-    assertEqual(result, stream.str(),
+    assertEqual(result, stream,
         {[](TestResult &) { throw StandardException{"error"}; }, "myTest"});
 }
 
