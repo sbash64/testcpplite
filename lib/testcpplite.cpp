@@ -28,7 +28,7 @@ static auto quoted(std::string_view s) -> std::string {
 
 static void writeFailure(
     std::ostream &stream, const Test &test, const std::string &what) {
-    stream << "fail " << test.name << '\n';
+    stream << "\x1b[31mfailed\x1b[0m " << test.name << '\n';
     stream << "    " << what << '\n';
 }
 

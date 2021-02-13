@@ -92,7 +92,7 @@ auto expectationMessage(const std::string &expected, const std::string &actual)
 };
 
 auto failMessage(const std::string &name) -> std::string {
-    return withNewLine("fail " + name);
+    return withNewLine("\x1b[31mfailed\x1b[0m " + name);
 }
 
 auto failsExpectsAActualBMessage(const std::string &name) -> std::string {
