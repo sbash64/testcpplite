@@ -72,7 +72,7 @@ class StandardException : public std::exception {
 };
 }
 
-auto testStream(const std::vector<Test> &tests) -> std::stringstream {
+static auto testStream(const std::vector<Test> &tests) -> std::stringstream {
     std::stringstream stream;
     test(tests, stream);
     return stream;
@@ -84,35 +84,39 @@ static auto test(const std::vector<Test> &tests) -> int {
 }
 
 static void assertEqual(
-    TestResult &result, const std::string &s, const std::stringstream &stream) {
-    testcpplite::assertEqual(result, s, stream.str());
+    TestResult &result, std::string_view s, const std::stringstream &stream) {
+    assertEqual(result, s, stream.str());
 }
 
 static void assertEqual(
-    TestResult &result, const std::string &s, const std::vector<Test> &tests) {
+    TestResult &result, std::string_view s, const std::vector<Test> &tests) {
     assertEqual(result, s, testStream(tests));
 }
 
-static void assertEqual(
-    TestResult &result, const std::string &s, const Test &t) {
+static void assertEqual(TestResult &result, std::string_view s, const Test &t) {
     assertEqual(result, s, testStream({t}));
 }
 
-static auto withNewLine(const std::string &s) -> std::string {
-    return s + '\n';
+static auto withNewLine(std::string_view s) -> std::string {
+    std::stringstream stream;
+    stream << s << '\n';
+    return stream.str();
 }
 
 static auto expectationMessage(
-    const std::string &expected, const std::string &actual) -> std::string {
-    return withNewLine("expected:\n" + expected + "\nactual:\n" + actual);
+    std::string_view expected, std::string_view actual) -> std::string {
+    std::stringstream stream;
+    stream << "expected:\n" << expected << "\nactual:\n" << actual;
+    return withNewLine(stream.str());
 };
 
-static auto failMessage(const std::string &name) -> std::string {
-    return withNewLine("\x1b[31mfailed\x1b[0m " + name);
+static auto failMessage(std::string_view name) -> std::string {
+    std::stringstream stream;
+    stream << "\x1b[31mfailed\x1b[0m " << name;
+    return withNewLine(stream.str());
 }
 
-static auto failsExpectsAActualBMessage(const std::string &name)
-    -> std::string {
+static auto failsExpectsAActualBMessage(std::string_view name) -> std::string {
     return failMessage(name) + expectationMessage("\"a\"", "\"b\"");
 }
 
