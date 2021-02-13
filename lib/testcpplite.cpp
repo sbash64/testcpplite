@@ -32,8 +32,8 @@ static auto withNewLine(std::ostream &stream) -> std::ostream & {
 
 static void writeFailure(
     std::ostream &stream, const Test &test, std::string_view what) {
-    withNewLine(withNewLine(stream << "\x1b[31mfailed\x1b[0m " << test.name)
-        << "    " << what);
+    withNewLine(
+        withNewLine(stream << "\x1b[31mfailed\x1b[0m " << test.name) << what);
 }
 
 static auto test(const Test &test, std::ostream &stream) -> bool {
@@ -42,7 +42,8 @@ static auto test(const Test &test, std::ostream &stream) -> bool {
         test.f(result);
         if (result.failed) {
             std::stringstream failureStream;
-            failureStream << "expected " << result.expected << ", actual "
+            failureStream << "expected:\n"
+                          << result.expected << "\nactual:\n"
                           << result.actual;
             writeFailure(stream, test, failureStream.str());
         } else

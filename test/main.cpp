@@ -88,7 +88,7 @@ auto withNewLine(const std::string &s) -> std::string { return s + '\n'; }
 
 auto expectationMessage(const std::string &expected, const std::string &actual)
     -> std::string {
-    return withNewLine("    expected " + expected + ", actual " + actual);
+    return withNewLine("expected:\n" + expected + "\nactual:\n" + actual);
 };
 
 auto failMessage(const std::string &name) -> std::string {
@@ -218,7 +218,7 @@ void failedReallyLargeSignedIntegerComparisonShowsFailedMessage(
 }
 
 void catchesStandardExceptions(TestResult &result) {
-    assertEqual(result, failMessage("myTest") + "    error\n",
+    assertEqual(result, failMessage("myTest") + "error\n",
         {[](TestResult &) { throw StandardException{"error"}; }, "myTest"});
 }
 
