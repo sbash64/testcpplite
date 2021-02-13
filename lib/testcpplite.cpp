@@ -2,8 +2,7 @@
 #include <exception>
 #include <sstream>
 
-namespace sbash64 {
-namespace testcpplite {
+namespace sbash64::testcpplite {
 struct TestResult {
     std::string expected;
     std::string actual;
@@ -20,9 +19,11 @@ static void setActual(TestResult &result, std::string s) {
 
 static void fail(TestResult &result) { result.failed = true; }
 
-static auto quoted(const std::string &s) -> std::string {
+static auto quoted(std::string_view s) -> std::string {
+    std::stringstream stream;
     constexpr auto mark{'"'};
-    return mark + s + mark;
+    stream << mark << s << mark;
+    return stream.str();
 }
 
 static void writeFailure(
@@ -57,8 +58,8 @@ auto test(const std::vector<Test> &tests, std::ostream &stream) -> int {
     return passed ? 0 : 1;
 }
 
-void assertEqual(TestResult &result, const std::string &expected,
-    const std::string &actual) {
+void assertEqual(
+    TestResult &result, std::string_view expected, std::string_view actual) {
     if (expected != actual) {
         setExpected(result, quoted(expected));
         setActual(result, quoted(actual));
@@ -123,6 +124,5 @@ void assertEqual(TestResult &result, const void *expected, const void *actual) {
         setActual(result, actualStream.str());
         fail(result);
     }
-}
 }
 }
