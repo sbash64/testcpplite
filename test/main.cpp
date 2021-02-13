@@ -88,16 +88,6 @@ static auto test(const std::vector<Test> &tests) -> int {
     return test(tests, stream);
 }
 
-static void assertEqual(
-    TestResult &result, std::string_view s, const std::stringstream &stream) {
-    assertEqual(result, s, stream.str());
-}
-
-static void assertEqual(
-    TestResult &result, std::string_view s, const std::vector<Test> &tests) {
-    assertEqual(result, s, testStream(tests));
-}
-
 static void assertEqual(TestResult &result, const std::stringstream &stream,
     const std::vector<Test> &tests) {
     assertEqual(result, stream, testStream(tests));
@@ -319,7 +309,10 @@ static void catchesStandardExceptions(TestResult &result) {
 }
 
 static void printsPassedTestCount(TestResult &result) {
-    assertEqual(result, "\x1b[32mpassed\x1b[0m - 3 tests\n",
+    expectTestStreamMatches(result,
+        [=](std::stringstream &stream) {
+            stream << "\x1b[32mpassed\x1b[0m - 3 tests\n";
+        },
         {{passesBooleanAssertion, "a"}, {passesBooleanAssertion, "b"},
             {passesBooleanAssertion, "c"}});
 }
