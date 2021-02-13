@@ -97,23 +97,23 @@ static void assertEqual(TestResult &result, std::string_view s, const Test &t) {
     assertEqual(result, s, testStream({t}));
 }
 
-static auto withNewLine(std::string_view s) -> std::string {
-    std::stringstream stream;
-    stream << s << '\n';
-    return stream.str();
+static auto withNewLine(std::ostream &stream) -> std::ostream & {
+    return stream << '\n';
 }
 
 static auto expectationMessage(
     std::string_view expected, std::string_view actual) -> std::string {
     std::stringstream stream;
     stream << "expected:\n" << expected << "\nactual:\n" << actual;
-    return withNewLine(stream.str());
+    withNewLine(stream);
+    return stream.str();
 };
 
 static auto failMessage(std::string_view name) -> std::string {
     std::stringstream stream;
     stream << "\x1b[31mfailed\x1b[0m " << name;
-    return withNewLine(stream.str());
+    withNewLine(stream);
+    return stream.str();
 }
 
 static auto failsExpectsAActualBMessage(std::string_view name) -> std::string {
@@ -121,7 +121,10 @@ static auto failsExpectsAActualBMessage(std::string_view name) -> std::string {
 }
 
 static auto passMessage() -> std::string {
-    return withNewLine("\x1b[32mpassed\x1b[0m - 1 test");
+    std::stringstream stream;
+    stream << "\x1b[32mpassed\x1b[0m - 1 test";
+    withNewLine(stream);
+    return stream.str();
 }
 
 static void passedOnlyTestShowsPassedMessage(TestResult &result) {
