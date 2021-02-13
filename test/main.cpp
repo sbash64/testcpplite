@@ -72,6 +72,11 @@ class StandardException : public std::exception {
 };
 }
 
+static void assertEqual(TestResult &result, const std::stringstream &expected,
+    const std::stringstream &actual) {
+    assertEqual(result, expected.str(), actual.str());
+}
+
 static auto testStream(const std::vector<Test> &tests) -> std::stringstream {
     std::stringstream stream;
     test(tests, stream);
@@ -95,12 +100,12 @@ static void assertEqual(
 
 static void assertEqual(TestResult &result, const std::stringstream &stream,
     const std::vector<Test> &tests) {
-    assertEqual(result, stream.str(), testStream(tests));
+    assertEqual(result, stream, testStream(tests));
 }
 
 static void assertEqual(
     TestResult &result, const std::stringstream &stream, const Test &t) {
-    assertEqual(result, stream.str(), testStream({t}));
+    assertEqual(result, stream, std::vector<Test>{t});
 }
 
 static auto putNewLine(std::ostream &stream) -> std::ostream & {
