@@ -311,7 +311,7 @@ static void catchesStandardExceptions(TestResult &result) {
 static void printsPassedTestCount(TestResult &result) {
     expectTestStreamMatches(result,
         [=](std::stringstream &stream) {
-            stream << "\x1b[32mpassed\x1b[0m - 3 tests\n";
+            putNewLine(stream << "\x1b[32mpassed\x1b[0m - 3 tests");
         },
         {{passesBooleanAssertion, "a"}, {passesBooleanAssertion, "b"},
             {passesBooleanAssertion, "c"}});
