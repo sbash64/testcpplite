@@ -53,8 +53,12 @@ auto test(const std::vector<Test> &tests, std::ostream &stream) -> int {
     bool passed{true};
     for (const auto &t : tests)
         passed &= test(t, stream);
-    if (passed)
-        stream << "pass\n";
+    if (passed) {
+        stream << "pass - " << tests.size() << " test";
+        if (tests.size() != 1)
+            stream << 's';
+        stream << '\n';
+    }
     return passed ? 0 : 1;
 }
 
