@@ -104,26 +104,28 @@ static auto withNewLine(std::ostream &stream) -> std::ostream & {
 static auto expectationMessage(
     std::string_view expected, std::string_view actual) -> std::string {
     std::stringstream stream;
-    stream << "expected:\n" << expected << "\nactual:\n" << actual;
-    withNewLine(stream);
+    withNewLine(
+        withNewLine(withNewLine(withNewLine(stream << "expected:") << expected)
+            << "actual:")
+        << actual);
     return stream.str();
 };
 
 static auto failMessage(std::string_view name) -> std::string {
     std::stringstream stream;
-    stream << "\x1b[31mfailed\x1b[0m " << name;
-    withNewLine(stream);
+    withNewLine(stream << "\x1b[31mfailed\x1b[0m " << name);
     return stream.str();
 }
 
 static auto failsExpectsAActualBMessage(std::string_view name) -> std::string {
-    return failMessage(name) + expectationMessage("\"a\"", "\"b\"");
+    std::stringstream stream;
+    stream << failMessage(name) << expectationMessage("\"a\"", "\"b\"");
+    return stream.str();
 }
 
 static auto passMessage() -> std::string {
     std::stringstream stream;
-    stream << "\x1b[32mpassed\x1b[0m - 1 test";
-    withNewLine(stream);
+    withNewLine(stream << "\x1b[32mpassed\x1b[0m - 1 test");
     return stream.str();
 }
 
