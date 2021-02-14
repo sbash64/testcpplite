@@ -5,8 +5,6 @@
 namespace sbash64::testcpplite {
 struct TestResult {
     std::stringstream failureStream;
-    std::string expected;
-    std::string actual;
     bool failed;
 };
 
@@ -24,10 +22,11 @@ static auto putNewLine(std::ostream &stream) -> std::ostream & {
 }
 
 template <typename T>
-static auto putExpectationMessage(std::ostream &stream, const T &expected,
-    const T &actual) -> std::ostream & {
-    return putNewLine(putNewLine(putNewLine(stream << "expected:") << expected)
-               << "actual:")
+void putExpectationMessage(
+    TestResult &result, const T &expected, const T &actual) {
+    putNewLine(
+        putNewLine(putNewLine(result.failureStream << "expected:") << expected)
+        << "actual:")
         << actual;
 }
 
@@ -63,8 +62,7 @@ void assertEqual(
     TestResult &result, std::string_view expected, std::string_view actual) {
     if (expected != actual) {
         fail(result);
-        putExpectationMessage(
-            result.failureStream, quoted(expected), quoted(actual));
+        putExpectationMessage(result, quoted(expected), quoted(actual));
     }
 }
 
@@ -72,7 +70,7 @@ template <typename T>
 void assertEqual(TestResult &result, T expected, T actual) {
     if (expected != actual) {
         fail(result);
-        putExpectationMessage(result.failureStream, expected, actual);
+        putExpectationMessage(result, expected, actual);
     }
 }
 
@@ -104,21 +102,21 @@ constexpr auto falseString{"false"};
 void assertTrue(TestResult &result, bool c) {
     if (!c) {
         fail(result);
-        putExpectationMessage(result.failureStream, trueString, falseString);
+        putExpectationMessage(result, trueString, falseString);
     }
 }
 
 void assertFalse(TestResult &result, bool c) {
     if (c) {
         fail(result);
-        putExpectationMessage(result.failureStream, falseString, trueString);
+        putExpectationMessage(result, falseString, trueString);
     }
 }
 
 void assertEqual(TestResult &result, const void *expected, const void *actual) {
     if (expected != actual) {
         fail(result);
-        putExpectationMessage(result.failureStream, expected, actual);
+        putExpectationMessage(result, expected, actual);
     }
 }
 }
