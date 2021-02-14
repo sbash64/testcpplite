@@ -4,7 +4,7 @@
 
 namespace sbash64::testcpplite {
 struct TestResult {
-    std::stringstream failureStream;
+    std::stringstream failureMessageStream;
     bool failed;
 };
 
@@ -24,8 +24,8 @@ static auto putNewLine(std::ostream &stream) -> std::ostream & {
 template <typename T>
 void putExpectationMessage(
     TestResult &result, const T &expected, const T &actual) {
-    putNewLine(
-        putNewLine(putNewLine(result.failureStream << "expected:") << expected)
+    putNewLine(putNewLine(putNewLine(result.failureMessageStream << "expected:")
+                   << expected)
         << "actual:")
         << actual;
 }
@@ -37,10 +37,10 @@ static auto test(const Test &test, std::ostream &stream) -> bool {
         if (!result.failed)
             return true;
     } catch (const std::exception &e) {
-        result.failureStream << e.what();
+        result.failureMessageStream << e.what();
     }
     putNewLine(putNewLine(stream << "\x1b[31mfailed\x1b[0m " << test.name)
-        << result.failureStream.str());
+        << result.failureMessageStream.str());
     return false;
 }
 
