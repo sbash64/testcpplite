@@ -4,18 +4,11 @@
 
 namespace sbash64::testcpplite {
 struct TestResult {
+    std::stringstream failureStream;
     std::string expected;
     std::string actual;
     bool failed;
 };
-
-static void setExpected(TestResult &result, std::string s) {
-    result.expected = std::move(s);
-}
-
-static void setActual(TestResult &result, std::string s) {
-    result.actual = std::move(s);
-}
 
 static void fail(TestResult &result) { result.failed = true; }
 
@@ -30,22 +23,25 @@ static auto putNewLine(std::ostream &stream) -> std::ostream & {
     return stream << '\n';
 }
 
+template <typename T>
+static auto putExpectationMessage(std::ostream &stream, const T &expected,
+    const T &actual) -> std::ostream & {
+    return putNewLine(putNewLine(putNewLine(stream << "expected:") << expected)
+               << "actual:")
+        << actual;
+}
+
 static auto test(const Test &test, std::ostream &stream) -> bool {
-    std::stringstream failureStream;
+    TestResult result{};
     try {
-        TestResult result{};
         test.f(result);
         if (!result.failed)
             return true;
-        putNewLine(putNewLine(putNewLine(failureStream << "expected:")
-                       << result.expected)
-            << "actual:")
-            << result.actual;
     } catch (const std::exception &e) {
-        failureStream << e.what();
+        result.failureStream << e.what();
     }
     putNewLine(putNewLine(stream << "\x1b[31mfailed\x1b[0m " << test.name)
-        << failureStream.str());
+        << result.failureStream.str());
     return false;
 }
 
@@ -66,18 +62,17 @@ auto test(const std::vector<Test> &tests, std::ostream &stream) -> int {
 void assertEqual(
     TestResult &result, std::string_view expected, std::string_view actual) {
     if (expected != actual) {
-        setExpected(result, quoted(expected));
-        setActual(result, quoted(actual));
         fail(result);
+        putExpectationMessage(
+            result.failureStream, quoted(expected), quoted(actual));
     }
 }
 
 template <typename T>
 void assertEqual(TestResult &result, T expected, T actual) {
     if (expected != actual) {
-        setExpected(result, std::to_string(expected));
-        setActual(result, std::to_string(actual));
         fail(result);
+        putExpectationMessage(result.failureStream, expected, actual);
     }
 }
 
@@ -108,29 +103,22 @@ constexpr auto falseString{"false"};
 
 void assertTrue(TestResult &result, bool c) {
     if (!c) {
-        setExpected(result, trueString);
-        setActual(result, falseString);
         fail(result);
+        putExpectationMessage(result.failureStream, trueString, falseString);
     }
 }
 
 void assertFalse(TestResult &result, bool c) {
     if (c) {
-        setExpected(result, falseString);
-        setActual(result, trueString);
         fail(result);
+        putExpectationMessage(result.failureStream, falseString, trueString);
     }
 }
 
 void assertEqual(TestResult &result, const void *expected, const void *actual) {
     if (expected != actual) {
-        std::stringstream expectedStream;
-        expectedStream << expected;
-        std::stringstream actualStream;
-        actualStream << actual;
-        setExpected(result, expectedStream.str());
-        setActual(result, actualStream.str());
         fail(result);
+        putExpectationMessage(result.failureStream, expected, actual);
     }
 }
 }
