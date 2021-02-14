@@ -209,6 +209,21 @@ static void failedIntegerComparisonShowsFailedMessage(TestResult &result) {
         {expectsOneActualZero, "a test"});
 }
 
+static void twoAssertionFailures(TestResult &result) {
+    expectTestStreamMatches(result,
+        [](std::stringstream &stream) {
+            putExpectationMessage(
+                putNewLine(putExpectationMessage(
+                    putFailMessage(stream, "a test"), "0", "1")),
+                "4", "5");
+        },
+        {[=](testcpplite::TestResult &subresult) {
+             assertEqual(subresult, 0, 1);
+             assertEqual(subresult, 4, 5);
+         },
+            "a test"});
+}
+
 static void failedIntegerPointerComparisonShowsFailedMessage(
     TestResult &result) {
     const int a{0};
@@ -355,7 +370,8 @@ static int main() {
             {failedReallyLargeSignedIntegerComparisonShowsFailedMessage,
                 "failedReallyLargeSignedIntegerComparisonShowsFailedMessage"},
             {catchesStandardExceptions, "catchesStandardExceptions"},
-            {printsPassedTestCount, "printsPassedTestCount"}},
+            {printsPassedTestCount, "printsPassedTestCount"},
+            {twoAssertionFailures, "twoAssertionFailures"}},
         std::cout);
 }
 }

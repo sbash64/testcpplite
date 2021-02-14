@@ -24,10 +24,12 @@ static auto putNewLine(std::ostream &stream) -> std::ostream & {
 template <typename T>
 void putExpectationMessage(
     TestResult &result, const T &expected, const T &actual) {
-    putNewLine(putNewLine(putNewLine(result.failureMessageStream << "expected:")
-                   << expected)
-        << "actual:")
-        << actual;
+    putNewLine(
+        putNewLine(putNewLine(putNewLine(putNewLine(result.failureMessageStream)
+                                  << "expected:")
+                       << expected)
+            << "actual:")
+        << actual);
 }
 
 static auto test(const Test &test, std::ostream &stream) -> bool {
@@ -37,10 +39,10 @@ static auto test(const Test &test, std::ostream &stream) -> bool {
         if (!result.failed)
             return true;
     } catch (const std::exception &e) {
-        result.failureMessageStream << e.what();
+        putNewLine(putNewLine(result.failureMessageStream) << e.what());
     }
-    putNewLine(putNewLine(stream << "\x1b[31mfailed\x1b[0m " << test.name)
-        << result.failureMessageStream.str());
+    stream << "\x1b[31mfailed\x1b[0m " << test.name
+           << result.failureMessageStream.str();
     return false;
 }
 
