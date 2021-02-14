@@ -26,31 +26,26 @@ static auto quoted(std::string_view s) -> std::string {
     return stream.str();
 }
 
-static auto withNewLine(std::ostream &stream) -> std::ostream & {
+static auto putNewLine(std::ostream &stream) -> std::ostream & {
     return stream << '\n';
 }
 
-static void writeFailure(
-    std::ostream &stream, const Test &test, std::string_view what) {
-    withNewLine(
-        withNewLine(stream << "\x1b[31mfailed\x1b[0m " << test.name) << what);
-}
-
 static auto test(const Test &test, std::ostream &stream) -> bool {
+    std::stringstream failureStream;
     try {
         TestResult result{};
         test.f(result);
-        if (result.failed) {
-            std::stringstream failureStream;
-            failureStream << "expected:\n"
-                          << result.expected << "\nactual:\n"
-                          << result.actual;
-            writeFailure(stream, test, failureStream.str());
-        } else
+        if (!result.failed)
             return true;
+        putNewLine(putNewLine(putNewLine(failureStream << "expected:")
+                       << result.expected)
+            << "actual:")
+            << result.actual;
     } catch (const std::exception &e) {
-        writeFailure(stream, test, e.what());
+        failureStream << e.what();
     }
+    putNewLine(putNewLine(stream << "\x1b[31mfailed\x1b[0m " << test.name)
+        << failureStream.str());
     return false;
 }
 
@@ -59,13 +54,13 @@ auto test(const std::vector<Test> &tests, std::ostream &stream) -> int {
     for (const auto &t : tests)
         passed &= test(t, stream);
     if (passed) {
-        stream << "\x1b[32mpassed\x1b[0m";
-        stream << " - " << tests.size() << " test";
+        stream << "\x1b[32mpassed\x1b[0m - " << tests.size() << " test";
         if (tests.size() != 1)
             stream << 's';
-        withNewLine(stream);
+        putNewLine(stream);
+        return 0;
     }
-    return passed ? 0 : 1;
+    return 1;
 }
 
 void assertEqual(
@@ -87,39 +82,42 @@ void assertEqual(TestResult &result, T expected, T actual) {
 }
 
 void assertEqual(TestResult &result, int expected, int actual) {
-    assertEqual<int>(result, expected, actual);
+    assertEqual<>(result, expected, actual);
 }
 
 void assertEqual(TestResult &result, long expected, long actual) {
-    assertEqual<long>(result, expected, actual);
+    assertEqual<>(result, expected, actual);
 }
 
 void assertEqual(
     TestResult &result, unsigned long expected, unsigned long actual) {
-    assertEqual<unsigned long>(result, expected, actual);
+    assertEqual<>(result, expected, actual);
 }
 
 void assertEqual(TestResult &result, unsigned long long expected,
     unsigned long long actual) {
-    assertEqual<unsigned long long>(result, expected, actual);
+    assertEqual<>(result, expected, actual);
 }
 
 void assertEqual(TestResult &result, long long expected, long long actual) {
-    assertEqual<long long>(result, expected, actual);
+    assertEqual<>(result, expected, actual);
 }
+
+constexpr auto trueString{"true"};
+constexpr auto falseString{"false"};
 
 void assertTrue(TestResult &result, bool c) {
     if (!c) {
-        setExpected(result, "true");
-        setActual(result, "false");
+        setExpected(result, trueString);
+        setActual(result, falseString);
         fail(result);
     }
 }
 
 void assertFalse(TestResult &result, bool c) {
     if (c) {
-        setExpected(result, "false");
-        setActual(result, "true");
+        setExpected(result, falseString);
+        setActual(result, trueString);
         fail(result);
     }
 }
