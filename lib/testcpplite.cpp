@@ -7,16 +7,12 @@ namespace {
 struct QuotedString {
     std::string_view stringView;
 };
-
-struct FailedTestStream {
-    std::ostream &stream;
-    const Test &test;
-    bool put{};
-};
 }
 
 struct TestResult {
-    FailedTestStream failureMessageStream;
+    std::ostream &stream;
+    const Test &test;
+    bool failed{};
 };
 
 static auto operator<<(std::ostream &stream, const QuotedString &s)
@@ -26,41 +22,40 @@ static auto operator<<(std::ostream &stream, const QuotedString &s)
 }
 
 template <typename T>
-static auto operator<<(FailedTestStream &stream, const T &s) -> std::ostream & {
-    if (!stream.put) {
-        stream.stream << "\x1b[31mfailed\x1b[0m " << stream.test.name;
-        stream.put = true;
+static auto operator<<(TestResult &result, const T &s) -> std::ostream & {
+    if (!result.failed) {
+        result.failed = true;
+        result.stream << "\x1b[31mfailed\x1b[0m " << result.test.name;
     }
-    return stream.stream << s;
+    return result.stream << s;
 }
 
 static auto putNewLine(std::ostream &stream) -> std::ostream & {
     return stream << '\n';
 }
 
-static auto putNewLine(FailedTestStream &stream) -> std::ostream & {
-    return stream << '\n';
+static auto putNewLine(TestResult &result) -> std::ostream & {
+    return result << '\n';
 }
 
 template <typename T>
 void putExpectationMessage(
     TestResult &result, const T &expected, const T &actual) {
     putNewLine(
-        putNewLine(putNewLine(putNewLine(putNewLine(result.failureMessageStream)
-                                  << "expected:")
+        putNewLine(putNewLine(putNewLine(putNewLine(result) << "expected:")
                        << expected)
             << "actual:")
         << actual);
 }
 
 static auto test(const Test &test, std::ostream &stream) -> bool {
-    TestResult result{{stream, test}};
+    TestResult result{stream, test};
     try {
         test.f(result);
     } catch (const std::exception &e) {
-        putNewLine(putNewLine(result.failureMessageStream) << e.what());
+        putNewLine(putNewLine(result) << e.what());
     }
-    return !result.failureMessageStream.put;
+    return !result.failed;
 }
 
 auto test(const std::vector<Test> &tests, std::ostream &stream) -> int {
