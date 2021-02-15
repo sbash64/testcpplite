@@ -15,6 +15,11 @@ struct TestResult {
     bool failed{};
 };
 
+static auto putColor(std::ostream &stream, std::string_view s,
+    std::string_view code) -> std::ostream & {
+    return stream << "\x1b[" << code << 'm' << s << "\x1b[0m";
+}
+
 static auto operator<<(std::ostream &stream, const QuotedString &s)
     -> std::ostream & {
     constexpr auto mark{'"'};
@@ -25,7 +30,7 @@ template <typename T>
 static auto operator<<(TestResult &result, const T &s) -> std::ostream & {
     if (!result.failed) {
         result.failed = true;
-        result.stream << "\x1b[31mfailed\x1b[0m " << result.test.name;
+        putColor(result.stream, "failed", "31") << ' ' << result.test.name;
     }
     return result.stream << s;
 }
@@ -63,7 +68,7 @@ auto test(const std::vector<Test> &tests, std::ostream &stream) -> int {
     for (const auto &t : tests)
         passed &= test(t, stream);
     if (passed) {
-        stream << "\x1b[32mpassed\x1b[0m - " << tests.size() << " test";
+        putColor(stream, "passed", "32") << " - " << tests.size() << " test";
         if (tests.size() != 1)
             stream << 's';
         putNewLine(stream);
