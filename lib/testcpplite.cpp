@@ -17,7 +17,6 @@ struct FailedTestStream {
 
 struct TestResult {
     FailedTestStream failureMessageStream;
-    bool failed{};
 };
 
 static auto operator<<(std::ostream &stream, const QuotedString &s)
@@ -34,8 +33,6 @@ static auto operator<<(FailedTestStream &stream, const T &s) -> std::ostream & {
     }
     return stream.stream << s;
 }
-
-static void fail(TestResult &result) { result.failed = true; }
 
 static auto putNewLine(std::ostream &stream) -> std::ostream & {
     return stream << '\n';
@@ -60,12 +57,10 @@ static auto test(const Test &test, std::ostream &stream) -> bool {
     TestResult result{{stream, test}};
     try {
         test.f(result);
-        if (!result.failed)
-            return true;
     } catch (const std::exception &e) {
         putNewLine(putNewLine(result.failureMessageStream) << e.what());
     }
-    return false;
+    return !result.failureMessageStream.put;
 }
 
 auto test(const std::vector<Test> &tests, std::ostream &stream) -> int {
@@ -84,19 +79,15 @@ auto test(const std::vector<Test> &tests, std::ostream &stream) -> int {
 
 void assertEqual(
     TestResult &result, std::string_view expected, std::string_view actual) {
-    if (expected != actual) {
-        fail(result);
+    if (expected != actual)
         putExpectationMessage(
             result, QuotedString{expected}, QuotedString{actual});
-    }
 }
 
 template <typename T>
 void assertEqual(TestResult &result, T expected, T actual) {
-    if (expected != actual) {
-        fail(result);
+    if (expected != actual)
         putExpectationMessage(result, expected, actual);
-    }
 }
 
 void assertEqual(TestResult &result, int expected, int actual) {
@@ -125,23 +116,17 @@ constexpr auto trueString{"true"};
 constexpr auto falseString{"false"};
 
 void assertTrue(TestResult &result, bool c) {
-    if (!c) {
-        fail(result);
+    if (!c)
         putExpectationMessage(result, trueString, falseString);
-    }
 }
 
 void assertFalse(TestResult &result, bool c) {
-    if (c) {
-        fail(result);
+    if (c)
         putExpectationMessage(result, falseString, trueString);
-    }
 }
 
 void assertEqual(TestResult &result, const void *expected, const void *actual) {
-    if (expected != actual) {
-        fail(result);
+    if (expected != actual)
         putExpectationMessage(result, expected, actual);
-    }
 }
 }
