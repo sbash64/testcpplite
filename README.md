@@ -30,7 +30,7 @@ static void fails(TestResult &result) {
 
 int main() {
     return sbash64::testcpplite::test(
-        {{passes, "thisTestWillPass"}, {fails, "thisTestWillFail"}},
+        {{passes, "this test will pass"}, {fails, "this test will fail"}},
         std::cout
     );
 }
@@ -38,6 +38,9 @@ int main() {
 
 ```bash
 $ ./a.out
-fail thisTestWillFail
-     expected "a", actual "b"
+failed this test will fail
+expected:
+"a"
+actual:
+"b"
 ```
