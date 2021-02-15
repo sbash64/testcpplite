@@ -8,14 +8,19 @@ struct TestResult {
     bool failed;
 };
 
-static void fail(TestResult &result) { result.failed = true; }
-
-static auto quoted(std::string_view s) -> std::string {
-    std::stringstream stream;
-    constexpr auto mark{'"'};
-    stream << mark << s << mark;
-    return stream.str();
+namespace {
+struct QuotedString {
+    std::string_view stringView;
+};
 }
+
+static auto operator<<(std::ostream &stream, const QuotedString &s)
+    -> std::ostream & {
+    constexpr auto mark{'"'};
+    return stream << mark << s.stringView << mark;
+}
+
+static void fail(TestResult &result) { result.failed = true; }
 
 static auto putNewLine(std::ostream &stream) -> std::ostream & {
     return stream << '\n';
@@ -64,7 +69,8 @@ void assertEqual(
     TestResult &result, std::string_view expected, std::string_view actual) {
     if (expected != actual) {
         fail(result);
-        putExpectationMessage(result, quoted(expected), quoted(actual));
+        putExpectationMessage(
+            result, QuotedString{expected}, QuotedString{actual});
     }
 }
 
