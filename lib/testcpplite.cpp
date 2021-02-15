@@ -17,7 +17,7 @@ struct TestResult {
 
 static auto putColor(std::ostream &stream, std::string_view s,
     std::string_view code) -> std::ostream & {
-    return stream << "\x1b[" << code << 'm' << s << "\x1b[0m";
+    return stream << "\033[" << code << 'm' << s << "\033[0m";
 }
 
 static auto operator<<(std::ostream &stream, const QuotedString &s)
