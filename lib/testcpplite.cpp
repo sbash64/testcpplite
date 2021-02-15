@@ -3,16 +3,22 @@
 #include <sstream>
 
 namespace sbash64::testcpplite {
-struct TestResult {
-    std::stringstream failureMessageStream;
-    bool failed;
-};
-
 namespace {
 struct QuotedString {
     std::string_view stringView;
 };
+
+struct FailedTestStream {
+    std::ostream &stream;
+    const Test &test;
+    bool put{};
+};
 }
+
+struct TestResult {
+    FailedTestStream failureMessageStream;
+    bool failed{};
+};
 
 static auto operator<<(std::ostream &stream, const QuotedString &s)
     -> std::ostream & {
@@ -20,9 +26,22 @@ static auto operator<<(std::ostream &stream, const QuotedString &s)
     return stream << mark << s.stringView << mark;
 }
 
+template <typename T>
+static auto operator<<(FailedTestStream &stream, const T &s) -> std::ostream & {
+    if (!stream.put) {
+        stream.stream << "\x1b[31mfailed\x1b[0m " << stream.test.name;
+        stream.put = true;
+    }
+    return stream.stream << s;
+}
+
 static void fail(TestResult &result) { result.failed = true; }
 
 static auto putNewLine(std::ostream &stream) -> std::ostream & {
+    return stream << '\n';
+}
+
+static auto putNewLine(FailedTestStream &stream) -> std::ostream & {
     return stream << '\n';
 }
 
@@ -38,7 +57,7 @@ void putExpectationMessage(
 }
 
 static auto test(const Test &test, std::ostream &stream) -> bool {
-    TestResult result{};
+    TestResult result{{stream, test}};
     try {
         test.f(result);
         if (!result.failed)
@@ -46,8 +65,6 @@ static auto test(const Test &test, std::ostream &stream) -> bool {
     } catch (const std::exception &e) {
         putNewLine(putNewLine(result.failureMessageStream) << e.what());
     }
-    stream << "\x1b[31mfailed\x1b[0m " << test.name
-           << result.failureMessageStream.str();
     return false;
 }
 
