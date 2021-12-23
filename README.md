@@ -1,9 +1,11 @@
 # TestCppLite
 
 ## Purpose
+
 provide a simple, lightweight testing library for C++ without inheritance or macros
 
 ## Build
+
 ```bash
 $ mkdir build
 $ cd build
@@ -12,9 +14,14 @@ $ cmake --build . --target sbash64-testcpplite
 ```
 
 ## Use
+
 ```c++
 #include <sbash64/testcpplite/testcpplite.hpp>
+
 #include <iostream>
+#include <string>
+
+using std::literals::string_literals::operator""s;
 
 namespace sbash64 {
 namespace testcpplite {
@@ -23,7 +30,7 @@ static void passes(TestResult &result) {
 }
 
 static void fails(TestResult &result) {
-    assertEqual(result, "a", "b");
+    assertEqual(result, "a"s, "b"s);
 }
 }
 }
