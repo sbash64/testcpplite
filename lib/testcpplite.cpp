@@ -67,7 +67,7 @@ static auto test(const Test &test, std::ostream &stream) -> bool {
 }
 
 auto test(const std::vector<Test> &tests, std::ostream &stream) -> int {
-  bool passed{true};
+  auto passed{true};
   for (const auto &t : tests)
     passed &= test(t, stream);
   if (passed) {
