@@ -17,8 +17,8 @@ struct TestResult {
   bool failed{};
 };
 
-static auto putColor(std::ostream &stream, std::string_view s,
-                     std::string_view code) -> std::ostream & {
+static auto putColor(std::ostream &stream, std::string_view s, int code)
+    -> std::ostream & {
   return stream << "\033[" << code << 'm' << s << "\033[0m";
 }
 
@@ -32,7 +32,8 @@ template <typename T>
 static auto operator<<(TestResult &result, const T &s) -> std::ostream & {
   if (!result.failed) {
     result.failed = true;
-    putColor(result.stream, "failed", "31") << ' ' << result.test.name;
+    constexpr auto redColorCode{31};
+    putColor(result.stream, "failed", redColorCode) << ' ' << result.test.name;
   }
   return result.stream << s;
 }
@@ -70,7 +71,9 @@ auto test(const std::vector<Test> &tests, std::ostream &stream) -> int {
   for (const auto &t : tests)
     passed &= test(t, stream);
   if (passed) {
-    putColor(stream, "passed", "32") << " - " << tests.size() << " test";
+    constexpr auto greenColorCode{32};
+    putColor(stream, "passed", greenColorCode)
+        << " - " << tests.size() << " test";
     if (tests.size() != 1)
       stream << 's';
     putNewLine(stream);
