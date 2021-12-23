@@ -1,6 +1,0 @@
-/build/
-/.clang-tidy
-/.vscode/
-/.clangd/
-/compile_commands.json
-/.cache/
