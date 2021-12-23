@@ -1,5 +1,6 @@
 #include "testcpplite.hpp"
 
+#include <cstdlib>
 #include <exception>
 #include <sstream>
 
@@ -73,9 +74,9 @@ auto test(const std::vector<Test> &tests, std::ostream &stream) -> int {
     if (tests.size() != 1)
       stream << 's';
     putNewLine(stream);
-    return 0;
+    return EXIT_SUCCESS;
   }
-  return 1;
+  return EXIT_FAILURE;
 }
 
 void assertEqual(TestResult &result, std::string_view expected,
