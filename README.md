@@ -7,10 +7,8 @@ provide a simple, lightweight testing library for C++ without inheritance or mac
 ## Build
 
 ```bash
-$ mkdir build
-$ cd build
-$ cmake ..
-$ cmake --build . --target sbash64-testcpplite
+$ cmake -S . -B build
+$ cmake --build build --target sbash64-testcpplite
 ```
 
 ## Use
@@ -23,28 +21,28 @@ $ cmake --build . --target sbash64-testcpplite
 
 using std::literals::string_literals::operator""s;
 
-namespace sbash64 {
-namespace testcpplite {
-static void passes(TestResult &result) {
+static void passes(sbash64::testcpplite::TestResult &result) {
     assertEqual(result, 1, 1);
 }
 
-static void fails(TestResult &result) {
+static void fails(sbash64::testcpplite::TestResult &result) {
     assertEqual(result, "a"s, "b"s);
-}
-}
 }
 
 int main() {
     return sbash64::testcpplite::test(
-        {{passes, "this test will pass"}, {fails, "this test will fail"}},
+        {
+            {passes, "this test will pass"},
+            {fails, "this test will fail"}
+        },
         std::cout
     );
 }
 ```
 
-```bash
-$ ./a.out
+Output:
+
+```
 failed this test will fail
 expected:
 "a"
